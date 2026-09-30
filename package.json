@@ -1,0 +1,22 @@
+{
+	"name": "ib",
+	"private": true,
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"packageManager": "pnpm@11.15.1",
+	"scripts": {
+		"biome": "biome check .",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint --write .",
+		"format": "biome format --write ."
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@biomejs/biome": "2.5.14",
+		"@types/node": "^26.6.3",
+		"typescript": "^7.0.2"
+	}
+}
