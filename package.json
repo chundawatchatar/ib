@@ -1,5 +1,5 @@
 {
-	"name": "ib",
+	"name": "payroll",
 	"private": true,
 	"version": "1.0.0",
 	"description": "",
@@ -9,7 +9,11 @@
 		"biome": "biome check .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
-		"format": "biome format --write ."
+		"format": "biome format --write .",
+		"dev": "pnpm --filter @payroll/client run dev",
+		"build": "pnpm -r run build",
+		"typecheck": "pnpm -r run typecheck",
+		"test": "pnpm -r run test"
 	},
 	"keywords": [],
 	"author": "",

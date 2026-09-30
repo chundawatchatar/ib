@@ -8,7 +8,7 @@ Place implementation files in each project's `src/` directory. Keep tests and as
 
 ## Build, Test, and Development Commands
 
-Run commands from the root using the pnpm version pinned in `package.json`; use `corepack pnpm` if needed.
+Run commands from the root using the pnpm version pinned in `package.json`.
 
 - `pnpm install`: install workspace dependencies using the shared lockfile.
 - `pnpm run biome`: check formatting, lint rules, and import organization.
@@ -24,7 +24,7 @@ Use strictly typed TypeScript and ES modules. Preserve strict compiler settings,
 
 Biome enforces tab indentation, double quotes, and recommended lint rules. Run `pnpm run biome` before submitting changes. VS Code recommendations and save settings are in `.vscode/`.
 
-Use descriptive directory and package names; keep filename casing consistent with imports.
+Name workspace packages `@<root-package-name>/<directory-name>`, such as `@payroll/client`, `@payroll/server`, and `@payroll/common`. Keep filename casing consistent with imports.
 
 ## Testing Guidelines
 
