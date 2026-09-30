@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
+@import "@payroll/ui/styles.css";
 @plugin "@tailwindcss/typography";
 
 @theme {
@@ -7,6 +8,12 @@
 }
 
 :root {
+	--ui-primary: var(--sea-ink);
+	--ui-on-primary: var(--foam);
+	--ui-surface: var(--surface-strong);
+	--ui-text: var(--sea-ink);
+	--ui-border: var(--line);
+	--ui-focus: var(--lagoon-deep);
 	--sea-ink: #173a40;
 	--sea-ink-soft: #416166;
 	--lagoon: #4fb8b2;
