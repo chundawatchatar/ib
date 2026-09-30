@@ -6,6 +6,10 @@ Read [docs/requirements.md](docs/requirements.md) before implementing features.
 Use it as the source of truth for product scope and acceptance criteria.
 Clarify ambiguities before coding, and update it when agreed requirements change.
 
+## Local Agent Skills
+
+Read the [local skill index](.agents/skills/README.md) and the relevant skill before changing API endpoints, shared contracts/types, or backend/frontend tests.
+
 ## Project Structure & Module Organization
 
 Organize runnable applications in `apps/` and shared libraries in `packages/`. Each project must have a `package.json` directly beneath one of these directories. Keep application logic in its owning app.
@@ -35,10 +39,6 @@ Name workspace packages `@<root-package-name>/<directory-name>`, such as `@salar
 ## Testing Guidelines
 
 Use Vitest for tests. Name tests `feature.test.ts` or `feature.test.tsx` and keep them near the relevant code. Cover observable behavior, error paths, and edge cases. Add regression tests for bug fixes and contract tests for API changes. Run affected tests and typechecks before submitting a pull request.
-
-## API Contracts & Type Safety
-
-Use ts-rest for end-to-end API type safety. Place shared contracts in `packages/` and have clients and servers consume them. Derive request and response types from those contracts instead of duplicating them. Validate external input at runtime and update contracts, implementations, and tests together.
 
 ## Commit & Pull Request Guidelines
 
