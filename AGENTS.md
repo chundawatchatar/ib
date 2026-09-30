@@ -1,5 +1,11 @@
 # Repository Guidelines
 
+## Product Requirements
+
+Read [docs/requirements.md](docs/requirements.md) before implementing features.
+Use it as the source of truth for product scope and acceptance criteria.
+Clarify ambiguities before coding, and update it when agreed requirements change.
+
 ## Project Structure & Module Organization
 
 Organize runnable applications in `apps/` and shared libraries in `packages/`. Each project must have a `package.json` directly beneath one of these directories. Keep application logic in its owning app.
