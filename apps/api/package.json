@@ -1,0 +1,26 @@
+{
+	"name": "@payroll/api",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch --include '../../packages/*/src/**/*.ts' src/index.ts",
+		"build": "tsc --noEmit && esbuild src/index.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/index.cjs --sourcemap",
+		"start": "node --enable-source-maps dist/index.cjs",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@payroll/contracts": "workspace:*",
+		"@ts-rest/express": "3.52.1",
+		"express": "^4.21.2"
+	},
+	"devDependencies": {
+		"esbuild": "0.28.2",
+		"@types/express": "^4.17.21",
+		"tsx": "^4.23.15",
+		"vitest": "^5.0.2"
+	}
+}

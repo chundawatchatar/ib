@@ -1,0 +1,18 @@
+{
+	"name": "@payroll/contracts",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"scripts": {
+		"build": "tsc --noEmit",
+		"dev": "tsc --watch",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@payroll/common": "workspace:*",
+		"@ts-rest/core": "3.52.1",
+		"zod": "^3.22.3"
+	}
+}
