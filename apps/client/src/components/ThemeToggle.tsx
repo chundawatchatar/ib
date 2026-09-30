@@ -1,4 +1,4 @@
-import { Button } from "@payroll/ui";
+import { Button } from "@salary-manager/ui";
 import { useEffect, useState } from "react";
 
 type ThemeMode = "light" | "dark" | "auto";

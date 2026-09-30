@@ -20,7 +20,7 @@ importers:
 
   apps/api:
     dependencies:
-      '@payroll/contracts':
+      '@salary-manager/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
       '@ts-rest/express':
@@ -45,7 +45,7 @@ importers:
 
   apps/client:
     dependencies:
-      '@payroll/ui':
+      '@salary-manager/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tailwindcss/vite':
@@ -117,7 +117,7 @@ importers:
 
   packages/contracts:
     dependencies:
-      '@payroll/common':
+      '@salary-manager/common':
         specifier: workspace:*
         version: link:../common
       '@ts-rest/core':

@@ -1,5 +1,5 @@
 {
-	"name": "@payroll/client",
+	"name": "@salary-manager/client",
 	"private": true,
 	"type": "module",
 	"imports": {
@@ -19,7 +19,7 @@
 		"test:watch": "vitest"
 	},
 	"dependencies": {
-		"@payroll/ui": "workspace:*",
+		"@salary-manager/ui": "workspace:*",
 		"@tailwindcss/vite": "^4.1.18",
 		"@tanstack/react-devtools": "latest",
 		"@tanstack/react-router": "latest",

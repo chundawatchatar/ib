@@ -1,5 +1,5 @@
 {
-	"name": "@payroll/common",
+	"name": "@salary-manager/common",
 	"private": true,
 	"type": "module",
 	"exports": {

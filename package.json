@@ -1,5 +1,5 @@
 {
-	"name": "payroll",
+	"name": "salary-manager",
 	"private": true,
 	"version": "1.0.0",
 	"description": "",
@@ -10,9 +10,9 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
 		"format": "biome format --write .",
-		"dev:api": "pnpm --filter @payroll/api run dev",
-		"dev": "pnpm --parallel --filter @payroll/api --filter @payroll/client run dev",
-		"dev:client": "pnpm --filter @payroll/client run dev",
+		"dev:api": "pnpm --filter @salary-manager/api run dev",
+		"dev": "pnpm --parallel --filter @salary-manager/api --filter @salary-manager/client run dev",
+		"dev:client": "pnpm --filter @salary-manager/client run dev",
 		"build": "pnpm -r run build",
 		"typecheck": "pnpm -r run typecheck",
 		"test": "pnpm -r run test"

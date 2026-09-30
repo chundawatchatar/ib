@@ -1,5 +1,5 @@
 {
-	"name": "@payroll/api",
+	"name": "@salary-manager/api",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -13,7 +13,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@payroll/contracts": "workspace:*",
+		"@salary-manager/contracts": "workspace:*",
 		"@ts-rest/express": "3.52.1",
 		"express": "^4.21.2"
 	},

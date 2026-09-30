@@ -30,7 +30,7 @@ Use strictly typed TypeScript and ES modules. Preserve strict compiler settings,
 
 Biome enforces tab indentation, double quotes, and recommended lint rules. Run `pnpm run biome` before submitting changes. VS Code recommendations and save settings are in `.vscode/`.
 
-Name workspace packages `@<root-package-name>/<directory-name>`, such as `@payroll/client`, `@payroll/server`, and `@payroll/common`. Keep filename casing consistent with imports.
+Name workspace packages `@<root-package-name>/<directory-name>`, such as `@salary-manager/client`, `@salary-manager/api`, and `@salary-manager/common`. Keep filename casing consistent with imports.
 
 ## Testing Guidelines
 

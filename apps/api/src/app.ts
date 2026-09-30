@@ -1,4 +1,4 @@
-import { contract } from "@payroll/contracts";
+import { contract } from "@salary-manager/contracts";
 import { createExpressEndpoints, initServer } from "@ts-rest/express";
 import express, { type Express } from "express";
 

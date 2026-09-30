@@ -8,8 +8,8 @@ runner loads contracts and common utilities from source.
 Saving API source or a file in `packages/*/src` automatically restarts the API.
 No separate shared-package build or compiler watcher is needed to run the API.
 
-For production, run `pnpm --filter @payroll/api build`, then
-`pnpm --filter @payroll/api start`. The build checks types and uses esbuild to
+For production, run `pnpm --filter @salary-manager/api build`, then
+`pnpm --filter @salary-manager/api start`. The build checks types and uses esbuild to
 bundle the API, shared packages, and JavaScript dependencies into
 `apps/api/dist/index.cjs`, with a source map alongside it.
 

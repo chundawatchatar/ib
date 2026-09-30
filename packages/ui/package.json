@@ -1,5 +1,5 @@
 {
-	"name": "@payroll/ui",
+	"name": "@salary-manager/ui",
 	"private": true,
 	"type": "module",
 	"exports": {

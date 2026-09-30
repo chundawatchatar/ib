@@ -1,6 +1,6 @@
 import { once } from "node:events";
 import type { Server } from "node:http";
-import { contract } from "@payroll/contracts";
+import { contract } from "@salary-manager/contracts";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { app } from "./app.js";
 

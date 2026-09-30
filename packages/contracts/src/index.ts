@@ -1,4 +1,4 @@
-import { ROUTE } from "@payroll/common";
+import { ROUTE } from "@salary-manager/common";
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
 

@@ -15,7 +15,7 @@ pnpm run test
 pnpm run biome
 ```
 
-The development server runs on port 3000. To target only this app, use `pnpm --filter @payroll/client run <script>`. Run `test:watch` for interactive Vitest testing, and `preview` to preview the production build.
+The development server runs on port 3000. To target only this app, use `pnpm --filter @salary-manager/client run <script>`. Run `test:watch` for interactive Vitest testing, and `preview` to preview the production build.
 
 ## Source and configuration
 
@@ -30,6 +30,6 @@ Use the root Biome configuration for formatting and linting. Format with `pnpm r
 
 ## Routes and contracts
 
-Create routes in `src/routes/`. The development server generates `src/routeTree.gen.ts`; regenerate it explicitly with `pnpm --filter @payroll/client run generate-routes` before a standalone typecheck after route changes. The build script generates routes before typechecking and building.
+Create routes in `src/routes/`. The development server generates `src/routeTree.gen.ts`; regenerate it explicitly with `pnpm --filter @salary-manager/client run generate-routes` before a standalone typecheck after route changes. The build script generates routes before typechecking and building.
 
 Do not manually edit the generated route tree. Share ts-rest API contracts through `packages/` as endpoints are introduced, following `AGENTS.md`.
