@@ -14,7 +14,7 @@ import { type ReactNode, useState } from "react";
 import { cn } from "../lib/utils";
 import { Alert } from "./Alert";
 import { Button } from "./Button";
-import { Icon } from "./Icon";
+import { Icon, Icons } from "./Icon";
 import { Skeleton } from "./Skeleton";
 import {
 	Table,
@@ -151,6 +151,13 @@ export function DataGrid<TData, TValue = unknown>({
 											<Button
 												variant="ghost"
 												size="sm"
+												// No side padding so the label lines up with its cells;
+												// right-aligned columns lead with the icon for the same reason.
+												className={cn(
+													"h-auto gap-1.5 px-0",
+													header.column.columnDef.meta?.align === "right" &&
+														"flex-row-reverse",
+												)}
 												disabled={isLoading}
 												onClick={header.column.getToggleSortingHandler()}
 											>
@@ -160,12 +167,12 @@ export function DataGrid<TData, TValue = unknown>({
 												)}
 												<Icon
 													size="sm"
-													name={
+													icon={
 														header.column.getIsSorted() === "asc"
-															? "arrow-up"
+															? Icons.ArrowUp
 															: header.column.getIsSorted() === "desc"
-																? "arrow-down"
-																: "arrow-up-down"
+																? Icons.ArrowDown
+																: Icons.ArrowUpDown
 													}
 													className={
 														header.column.getIsSorted()
@@ -232,7 +239,7 @@ export function DataGrid<TData, TValue = unknown>({
 					disabled={isLoading || !table.getCanPreviousPage()}
 					onClick={() => table.previousPage()}
 				>
-					<Icon name="chevron-left" size="sm" />
+					<Icon icon={Icons.ChevronLeft} size="sm" />
 					Previous
 				</Button>
 				<Button
@@ -242,7 +249,7 @@ export function DataGrid<TData, TValue = unknown>({
 					onClick={() => table.nextPage()}
 				>
 					Next
-					<Icon name="chevron-right" size="sm" />
+					<Icon icon={Icons.ChevronRight} size="sm" />
 				</Button>
 			</div>
 		</section>

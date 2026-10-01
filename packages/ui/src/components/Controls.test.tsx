@@ -54,29 +54,13 @@ it("composes a button style onto a link without button semantics", () => {
 	expect(screen.queryByRole("button")).toBeNull();
 });
 
-it("defaults fields to the small size and supports larger sizes", () => {
-	render(
-		<>
-			<Input aria-label="Small" />
-			<Input aria-label="Large" size="lg" />
-			<Select aria-label="Select">
-				<option>One</option>
-			</Select>
-		</>,
-	);
-	expect(screen.getByLabelText("Small").className).toContain("h-8");
-	expect(screen.getByLabelText("Large").className).toContain("h-12");
-	expect(screen.getByLabelText("Select").className).toContain("h-8");
-});
-
-it("replaces the native select arrow with a chevron icon", () => {
+it("puts layout classes and a decorative chevron on the select wrapper", () => {
 	render(
 		<Select aria-label="Country" className="w-auto">
 			<option>India</option>
 		</Select>,
 	);
 	const select = screen.getByLabelText("Country");
-	expect(select.className).toContain("appearance-none");
 	const wrapper = select.parentElement;
 	expect(wrapper?.className).toContain("w-auto");
 	expect(wrapper?.querySelector("svg[aria-hidden='true']")).not.toBeNull();

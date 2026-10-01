@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { type ComponentProps, useEffect, useRef } from "react";
 import { cn, disabledState, focusRing } from "../lib/utils";
-import { Icon, type IconName } from "./Icon";
+import { Icon, type IconComponent } from "./Icon";
 
 // Shared by Input, Select, and Textarea. Fields default to the compact size.
 export const fieldVariants = cva(
@@ -45,7 +45,7 @@ export const fieldIconPosition = {
 export type InputProps = Omit<ComponentProps<"input">, "size"> & {
 	size?: FieldSize;
 	/** Decorative icon shown before the value. */
-	icon?: IconName;
+	icon?: IconComponent;
 	debounceMs?: number;
 	onDebouncedChange?: (value: string) => void;
 };
@@ -94,7 +94,7 @@ export function Input({
 	return (
 		<div className={cn("relative inline-block w-full", className)}>
 			<Icon
-				name={icon}
+				icon={icon}
 				size={size}
 				className={cn(
 					"pointer-events-none absolute top-1/2 -translate-y-1/2 text-muted-foreground",

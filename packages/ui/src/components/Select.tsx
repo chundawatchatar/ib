@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
 import { cn } from "../lib/utils";
-import { Icon } from "./Icon";
+import { Icon, Icons } from "./Icon";
 import {
 	type FieldSize,
 	fieldHeights,
@@ -27,7 +27,7 @@ export function Select({ className, size = "sm", ...props }: SelectProps) {
 				)}
 			/>
 			<Icon
-				name="chevron-down"
+				icon={Icons.ChevronDown}
 				size={size}
 				className={cn(
 					"pointer-events-none absolute top-1/2 -translate-y-1/2 text-muted-foreground",

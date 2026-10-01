@@ -1,4 +1,4 @@
-import { Button } from "@salary-manager/ui";
+import { Button, Icon, Icons } from "@salary-manager/ui";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { employeeQueries } from "#/features/employees/api";
 import {
@@ -28,6 +28,7 @@ function Employees() {
 				<h1 className="m-0 text-2xl font-semibold">Employees</h1>
 				<Button asChild>
 					<Link to="/employees/new" className="no-underline">
+						<Icon icon={Icons.Plus} />
 						New employee
 					</Link>
 				</Button>

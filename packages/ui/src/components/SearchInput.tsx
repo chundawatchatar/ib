@@ -1,3 +1,4 @@
+import { Icons } from "./Icon";
 import { Input, type InputProps } from "./Input";
 
 export type SearchInputProps = Omit<
@@ -9,5 +10,5 @@ export type SearchInputProps = Omit<
 
 /** Debounced search field with a leading search icon. */
 export function SearchInput(props: SearchInputProps) {
-	return <Input {...props} type="search" icon="search" />;
+	return <Input {...props} type="search" icon={Icons.Search} />;
 }

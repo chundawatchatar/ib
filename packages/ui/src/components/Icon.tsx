@@ -1,27 +1,14 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import {
-	ArrowDown,
-	ArrowUp,
-	ArrowUpDown,
-	ChevronDown,
-	ChevronLeft,
-	ChevronRight,
-	Search,
-} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { cn } from "../lib/utils";
 
-// The single place the icon library is referenced; add icons here by name.
-const icons = {
-	"arrow-down": ArrowDown,
-	"arrow-up": ArrowUp,
-	"arrow-up-down": ArrowUpDown,
-	"chevron-down": ChevronDown,
-	"chevron-left": ChevronLeft,
-	"chevron-right": ChevronRight,
-	search: Search,
-} as const;
+export type { LucideIcon as IconComponent } from "lucide-react";
 
-export type IconName = keyof typeof icons;
+/**
+ * Every lucide icon, namespaced so names like `Table` or `Badge` do not clash
+ * with components. Static access (`Icons.Plus`) keeps unused icons out of the bundle.
+ */
+export * as Icons from "lucide-react";
 
 export const iconVariants = cva("shrink-0", {
 	variants: {
@@ -31,14 +18,13 @@ export const iconVariants = cva("shrink-0", {
 });
 
 export type IconProps = VariantProps<typeof iconVariants> & {
-	name: IconName;
+	icon: LucideIcon;
 	/** Accessible name; omit for decorative icons next to visible text. */
 	label?: string;
 	className?: string;
 };
 
-export function Icon({ name, size, label, className }: IconProps) {
-	const Component = icons[name];
+export function Icon({ icon: Component, size, label, className }: IconProps) {
 	return (
 		<Component
 			className={cn(iconVariants({ size }), className)}
