@@ -11,6 +11,7 @@ import {
 } from "@salary-manager/ui";
 import { money } from "#/lib/format";
 import { EmployeeProfileForm } from "../form/EmployeeProfileForm";
+import { SalaryForm } from "../form/SalaryForm";
 import { DeactivateEmployee } from "./DeactivateEmployee";
 
 type EmployeeDetailsProps = {
@@ -47,6 +48,12 @@ export function EmployeeDetails({ employee, reference }: EmployeeDetailsProps) {
 						<p className="m-0 text-sm text-muted-foreground">
 							Annual base salary in {employee.currencyCode}
 						</p>
+						<hr className="my-4 border-0 border-t border-border" />
+						<SalaryForm
+							key={employee.id}
+							employee={employee}
+							reference={reference}
+						/>
 					</CardContent>
 				</Card>
 				<div className="flex flex-col gap-6">

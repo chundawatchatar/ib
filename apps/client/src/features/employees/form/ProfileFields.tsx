@@ -1,23 +1,10 @@
 import type { ReferenceDataResponse } from "@salary-manager/contracts";
-import {
-	FormField,
-	fieldDescriptionIds,
-	Input,
-	Select,
-} from "@salary-manager/ui";
+import { FormField, Input, Select } from "@salary-manager/ui";
 import { useFormContext } from "react-hook-form";
+import { controlProps } from "#/lib/form";
 import type { ProfileValues } from "./employee-form";
 
 type ProfileFieldValues = Omit<ProfileValues, "version">;
-
-/** ARIA wiring for a control inside a FormField. */
-export function controlProps(id: string, error: string | undefined) {
-	return {
-		id,
-		"aria-invalid": error ? true : undefined,
-		"aria-describedby": fieldDescriptionIds(id, { error }),
-	};
-}
 
 type ProfileFieldsProps = {
 	reference: ReferenceDataResponse;

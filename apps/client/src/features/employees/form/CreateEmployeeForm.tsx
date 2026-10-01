@@ -3,14 +3,18 @@ import type { ReferenceDataResponse } from "@salary-manager/contracts";
 import { Alert, Button, FormField, Input, Select } from "@salary-manager/ui";
 import { useNavigate } from "@tanstack/react-router";
 import { FormProvider, useForm } from "react-hook-form";
-import { saveErrorMessage, setServerFieldErrors } from "#/lib/form";
+import {
+	controlProps,
+	saveErrorMessage,
+	setServerFieldErrors,
+} from "#/lib/form";
 import { useCreateEmployee } from "../api";
 import {
 	type CreateEmployeeValues,
 	createEmployeeSchema,
 	emptyEmployee,
 } from "./employee-form";
-import { controlProps, ProfileFields } from "./ProfileFields";
+import { ProfileFields } from "./ProfileFields";
 
 const fields = Object.keys(emptyEmployee) as (keyof CreateEmployeeValues)[];
 

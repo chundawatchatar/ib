@@ -1,3 +1,4 @@
+import { fieldDescriptionIds } from "@salary-manager/ui";
 import type { FieldValues, Path, UseFormSetError } from "react-hook-form";
 import { z } from "zod";
 import { ApiError, errorMessage } from "./api";
@@ -35,4 +36,13 @@ export function saveErrorMessage(error: unknown): string {
 		error,
 		"Couldn't save. Check your connection and try again.",
 	);
+}
+
+/** ARIA wiring for a control inside a FormField with this id. */
+export function controlProps(id: string, error: string | undefined) {
+	return {
+		id,
+		"aria-invalid": error ? true : undefined,
+		"aria-describedby": fieldDescriptionIds(id, { error }),
+	};
 }

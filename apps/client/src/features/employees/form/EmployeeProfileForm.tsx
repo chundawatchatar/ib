@@ -4,11 +4,9 @@ import type {
 	ReferenceDataResponse,
 } from "@salary-manager/contracts";
 import { Alert, Button } from "@salary-manager/ui";
-import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { isConflict, saveErrorMessage, setServerFieldErrors } from "#/lib/form";
-import { employeeQueries, useUpdateEmployee } from "../api";
+import { useUpdateEmployee } from "../api";
 import { ConflictAlert } from "./ConflictAlert";
 import {
 	type ProfileField,
@@ -16,6 +14,7 @@ import {
 	toProfileValues,
 } from "./employee-form";
 import { ProfileFields } from "./ProfileFields";
+import { useLoadLatest } from "./use-load-latest";
 
 type EmployeeProfileFormProps = {
 	employee: EmployeeResponse;
@@ -28,9 +27,7 @@ export function EmployeeProfileForm({
 	employee,
 	reference,
 }: EmployeeProfileFormProps) {
-	const queryClient = useQueryClient();
 	const updateEmployee = useUpdateEmployee(employee.id);
-	const [reloading, setReloading] = useState(false);
 	const form = useForm({
 		resolver: zodResolver(profileSchema),
 		defaultValues: toProfileValues(employee),
@@ -48,19 +45,10 @@ export function EmployeeProfileForm({
 		}
 	});
 
-	const loadLatest = async () => {
-		setReloading(true);
-		try {
-			const latest = await queryClient.fetchQuery({
-				...employeeQueries.detail(employee.id),
-				staleTime: 0,
-			});
-			form.reset(toProfileValues(latest));
-			updateEmployee.reset();
-		} finally {
-			setReloading(false);
-		}
-	};
+	const latest = useLoadLatest(employee.id, (fresh) => {
+		form.reset(toProfileValues(fresh));
+		updateEmployee.reset();
+	});
 
 	return (
 		<FormProvider {...form}>
@@ -71,7 +59,10 @@ export function EmployeeProfileForm({
 				className="flex flex-col gap-4"
 			>
 				{isConflict(updateEmployee.error) ? (
-					<ConflictAlert onReload={loadLatest} isReloading={reloading} />
+					<ConflictAlert
+						onReload={latest.load}
+						isReloading={latest.isLoading}
+					/>
 				) : (
 					updateEmployee.isError && (
 						<Alert variant="destructive">
