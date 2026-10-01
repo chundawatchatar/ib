@@ -3,9 +3,9 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "tsx watch --include '../../packages/*/src/**/*.ts' src/index.ts",
+		"dev": "tsx watch --env-file-if-exists=../../.env --include '../../packages/*/src/**/*.ts' src/index.ts",
 		"build": "tsc --noEmit && esbuild src/index.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/index.cjs --sourcemap",
-		"start": "node --enable-source-maps dist/index.cjs",
+		"start": "node --env-file-if-exists=../../.env --enable-source-maps dist/index.cjs",
 		"test": "vitest run",
 		"typecheck": "tsc --noEmit"
 	},
@@ -15,7 +15,8 @@
 	"dependencies": {
 		"@salary-manager/contracts": "workspace:*",
 		"@ts-rest/express": "3.52.1",
-		"express": "^4.21.2"
+		"express": "^4.21.2",
+		"@salary-manager/domain": "workspace:*"
 	},
 	"devDependencies": {
 		"esbuild": "0.28.2",

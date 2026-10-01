@@ -23,6 +23,9 @@ importers:
       '@salary-manager/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@salary-manager/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       '@ts-rest/express':
         specifier: 3.52.1
         version: 3.52.1(@ts-rest/core@3.52.1(@types/node@26.6.3)(zod@3.25.76))(express@4.22.3)(zod@3.25.76)
