@@ -1,0 +1,29 @@
+name: Database
+
+# Runs migrations or the seed against the deployed database on demand.
+# Requires the DATABASE_URL repository secret.
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: Command to run
+        type: choice
+        options: [migrate, seed]
+        default: migrate
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter @salary-manager/domain...
+      - run: pnpm db:${{ inputs.command }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

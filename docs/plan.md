@@ -7,7 +7,7 @@ completes it and move it to Done; `git log` records which commit that was.
 
 ## Next
 
-- [ ] Deploy API, client, and PostgreSQL; run migrations and seed
+- [ ] Deploy API, client, and PostgreSQL; run migrations and seed ([steps](deployment.md))
 
 ## Later
 
@@ -47,3 +47,4 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] Employee form and salary edit UI (React Hook Form with contract Zod schemas) with loading, error, and conflict states
 - [x] Insights UI with a shared string-minor-unit display formatter in `packages/common` (no floating-point conversion)
 - [x] CI: `pnpm check` and `pnpm test:db` against a PostgreSQL service
+- [x] Deployment setup: API Docker image with `PORT`, Render blueprint with `/api` proxy, manual migrate/seed workflow

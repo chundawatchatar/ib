@@ -1,0 +1,38 @@
+# Render blueprint: the API as a Docker web service and the client as a static
+# site. PostgreSQL is hosted on Neon; migrations and seed run through the
+# "Database" GitHub Actions workflow, never on API startup.
+services:
+  - type: web
+    name: salary-manager-api
+    runtime: docker
+    autoDeployTrigger: checksPass
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+
+  - type: web
+    name: salary-manager
+    runtime: static
+    autoDeployTrigger: checksPass
+    buildCommand: npm install --global pnpm@11.15.1 && pnpm install --frozen-lockfile --filter @salary-manager/client... && pnpm --filter @salary-manager/client run build
+    staticPublishPath: apps/client/dist/client
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    routes:
+      # The client calls /api on its own origin; proxy it to the API service.
+      # Update the host if Render assigns the API a different URL.
+      - type: rewrite
+        source: /api/*
+        destination: https://salary-manager-api.onrender.com/api/*
+      # Client-rendered routes all load the prerendered SPA shell.
+      - type: rewrite
+        source: /*
+        destination: /_shell.html

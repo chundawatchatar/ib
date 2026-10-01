@@ -238,3 +238,21 @@ hydration, and a separate server-side API URL.
 **Trade-off:** First paint waits for the JavaScript bundle and the first API
 calls, covered by skeletons. Deployment must serve `/api` on the client's origin
 (reverse proxy) or the API must allow cross-origin requests.
+
+## Deployment: Render static site and API, Neon PostgreSQL
+
+**Decision:** Deploy the client as a Render static site and the API as a Render
+Docker web service (`render.yaml`), with PostgreSQL on Neon. The static site
+rewrites `/api/*` to the API, so the browser keeps calling its own origin and
+the API needs no CORS. Migrations and the seed run from the manual "Database"
+GitHub Actions workflow. Steps are in [deployment](deployment.md).
+
+**Why:** Reviewers must be able to open the app for weeks at no cost. Neon's
+free database does not expire, unlike Render's free PostgreSQL. Keeping client
+and API as separate services lets each deploy and scale on its own, and the
+API image holds only the self-contained bundle. A manual workflow runs
+migrations explicitly with the database secret kept in GitHub, not on a laptop.
+
+**Trade-off:** Free Render services sleep when idle, so the first request after
+a pause can take close to a minute. The API URL is fixed in the static site's
+rewrite rule. The proxy adds a hop to every API request.

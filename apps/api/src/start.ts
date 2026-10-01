@@ -9,7 +9,7 @@ import { createServices } from "./services";
 // PostgreSQL's forwarded port), and requests to 127.0.0.1 would reach that service.
 export async function startApi(
 	databaseUrl = process.env.DATABASE_URL,
-	port = 3001,
+	port = parsePort(process.env.PORT),
 	host?: string,
 ) {
 	const connection = createDatabase(requireDatabaseUrl(databaseUrl));
@@ -46,4 +46,12 @@ export async function startApi(
 			return closing;
 		},
 	};
+}
+
+export function parsePort(value: string | undefined, fallback = 3001): number {
+	if (value === undefined || value === "") return fallback;
+	const port = Number(value);
+	if (!/^\d+$/.test(value) || port > 65_535)
+		throw new Error("PORT must be an integer from 0 to 65535");
+	return port;
 }

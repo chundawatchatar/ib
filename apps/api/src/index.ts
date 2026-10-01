@@ -2,7 +2,9 @@ import { startApi } from "./start";
 
 async function main(): Promise<void> {
 	const runtime = await startApi();
-	console.info("API listening at http://localhost:3001");
+	const address = runtime.server.address();
+	const port = typeof address === "object" && address ? address.port : "";
+	console.info(`API listening at http://localhost:${port}`);
 	const shutdown = () => {
 		runtime.close().catch(() => {
 			console.error("API shutdown failed");

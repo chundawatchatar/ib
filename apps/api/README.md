@@ -20,7 +20,9 @@ bundle the API, shared packages, and JavaScript dependencies into
 `apps/api/dist/index.cjs`, with a source map alongside it.
 
 Deploy the API's `dist` directory to a Node.js 22 or newer runtime. The current
-API bundle runs without workspace source files or `node_modules`.
+API bundle runs without workspace source files or `node_modules`; the root
+`Dockerfile` packages only that bundle. The API listens on `PORT` (default 3001).
+See the [deployment guide](../../docs/deployment.md).
 
 Run `pnpm build` to build all applications. The Vite client bundles its imported
 shared source through its own build pipeline. Shared package build scripts only

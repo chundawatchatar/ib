@@ -1,7 +1,7 @@
 import { once } from "node:events";
 import { createServer } from "node:net";
 import { describe, expect, it } from "vitest";
-import { startApi } from "./start";
+import { parsePort, startApi } from "./start";
 
 describe("API startup", () => {
 	it("rejects missing and invalid database configuration", async () => {
@@ -28,4 +28,20 @@ describe("API startup", () => {
 			);
 		}
 	});
+});
+
+describe("PORT", () => {
+	it("defaults to 3001 when unset or empty", () => {
+		expect(parsePort(undefined)).toBe(3001);
+		expect(parsePort("")).toBe(3001);
+	});
+	it("accepts a decimal port", () => {
+		expect(parsePort("10000")).toBe(10000);
+	});
+	it.each(["abc", "-1", "1.5", " 80", "0x50", "65536"])(
+		"rejects %j",
+		(value) => {
+			expect(() => parsePort(value)).toThrow("PORT must be an integer");
+		},
+	);
 });
