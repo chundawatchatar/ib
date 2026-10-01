@@ -6,7 +6,6 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import Footer from "../components/Footer";
 import Header from "../components/Header";
 import type { RouterContext } from "../router";
 
@@ -25,7 +24,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "TanStack Start Starter",
+				title: "Salary Manager",
 			},
 		],
 		links: [
@@ -46,10 +45,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
 				<HeadContent />
 			</head>
-			<body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
+			<body>
 				<Header />
 				{children}
-				<Footer />
 				<TanStackDevtools
 					config={{
 						position: "bottom-right",
