@@ -7,7 +7,6 @@
 	},
 	"scripts": {
 		"build": "tsc --noEmit",
-		"dev": "tsc --watch",
 		"typecheck": "tsc --noEmit"
 	}
 }

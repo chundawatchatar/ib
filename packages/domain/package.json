@@ -7,9 +7,9 @@
 	},
 	"scripts": {
 		"build": "tsc --noEmit",
-		"dev": "tsc --watch",
 		"typecheck": "tsc --noEmit",
 		"test": "vitest run --exclude '**/*.integration.test.ts'",
+		"test:watch": "vitest --exclude '**/*.integration.test.ts'",
 		"test:db": "vitest run integration.test",
 		"db:generate": "drizzle-kit generate && biome format --write migrations/meta",
 		"db:migrate": "tsx src/cli.ts migrate",

@@ -7,16 +7,12 @@
 	},
 	"scripts": {
 		"dev": "vite dev --port 3000",
-		"generate-routes": "tsr generate",
 		"build": "tsr generate && tsc --noEmit && vite build",
 		"preview": "vite preview",
-		"format": "biome format --write .",
-		"lint": "biome lint .",
-		"check": "biome check .",
 		"typecheck": "tsc --noEmit",
-		"lint:fix": "biome lint --write .",
 		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"generate-routes": "tsr generate"
 	},
 	"dependencies": {
 		"@salary-manager/ui": "workspace:*",

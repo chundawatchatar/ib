@@ -21,18 +21,21 @@ Place implementation files in each project's `src/` directory. Keep tests and as
 Run commands from the root using the pnpm version pinned in `package.json`.
 
 - `pnpm install`: install workspace dependencies using the shared lockfile.
+- `pnpm check`: run Biome, typecheck, and unit tests. **Run before finishing any change.**
+- `pnpm dev`: start the API (port 3001) and client (port 3000).
 - `pnpm run biome`: check formatting, lint rules, and import organization.
-- `pnpm run lint`: run lint checks only.
-- `pnpm run lint:fix`: apply safe lint fixes.
-- `pnpm run format`: write Biome formatting changes.
+- `pnpm run lint:fix` / `pnpm run format`: apply safe lint fixes / Biome formatting.
+- `pnpm typecheck`, `pnpm test`, `pnpm build`: run across all workspace projects.
+- `pnpm db:up`, `pnpm db:reset`, `pnpm db:seed`: start, recreate, and seed the local PostgreSQL (needs Docker and a root `.env` copied from `.env.example`).
+- `pnpm test:db`: real PostgreSQL integration tests; needs `pnpm db:up` and `TEST_DATABASE_URL`. Run when changing schema, migrations, seed, or queries.
 
-Define appropriate `dev`, `build`, `test`, and `typecheck` scripts in each workspace project. Target projects with `pnpm --filter <package-name> run <script>`.
+Workspace projects use the same script names, in this order where they apply: `dev`, `build`, `start`/`preview`, `typecheck`, `test`, `test:watch`, then project-specific scripts. Only apps have `dev`; shared packages are watched by the API dev runner and Vite. Lint and format scripts live only at the root, using the root `biome.json`. Target one project with `pnpm --filter <package-name> run <script>`.
 
 ## Coding Style & Naming Conventions
 
 Use strictly typed TypeScript and ES modules. Preserve strict compiler settings, avoid `any`, and narrow or validate `unknown` values at external boundaries. Prefer type narrowing over unchecked assertions.
 
-Biome enforces tab indentation, double quotes, and recommended lint rules. Run `pnpm run biome` before submitting changes. VS Code recommendations and save settings are in `.vscode/`.
+Biome enforces tab indentation, double quotes, recommended lint rules, and errors on unused imports, variables, and parameters. Run `pnpm check` before submitting changes. VS Code recommendations and save settings are in `.vscode/`.
 
 Name workspace packages `@<root-package-name>/<directory-name>`, such as `@salary-manager/client`, `@salary-manager/api`, and `@salary-manager/common`. Keep filename casing consistent with imports.
 

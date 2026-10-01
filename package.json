@@ -16,6 +16,7 @@
 		"build": "pnpm -r run build",
 		"typecheck": "pnpm -r run typecheck",
 		"test": "pnpm -r run test",
+		"check": "pnpm run biome && pnpm run typecheck && pnpm run test",
 		"db:up": "docker compose up -d --wait db",
 		"db:down": "docker compose down",
 		"db:generate": "pnpm --filter @salary-manager/domain run db:generate",
