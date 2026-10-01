@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { BackLink } from "#/components/BackLink";
 import { employeeQueries } from "#/features/employees/api";
 import { EmployeeDetails } from "#/features/employees/details/EmployeeDetails";
 import { referenceDataQuery } from "#/features/reference-data/api";
@@ -21,9 +22,7 @@ function EmployeePage() {
 	const { data: reference } = useSuspenseQuery(referenceDataQuery);
 	return (
 		<main className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6">
-			<Link to="/employees" className="self-start text-sm">
-				All employees
-			</Link>
+			<BackLink to="/employees">All employees</BackLink>
 			<EmployeeDetails employee={employee} reference={reference} />
 		</main>
 	);

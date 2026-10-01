@@ -28,6 +28,7 @@ export function ProfileFields({
 			<FormField id="employee-name" label="Full name" error={error("name")}>
 				<Input
 					{...controlProps("employee-name", error("name"))}
+					placeholder="e.g. Ada Lovelace"
 					autoComplete="off"
 					{...register("name")}
 				/>
@@ -35,6 +36,7 @@ export function ProfileFields({
 			<FormField id="employee-code" label="Employee code" error={error("code")}>
 				<Input
 					{...controlProps("employee-code", error("code"))}
+					placeholder="e.g. EMP01234"
 					autoComplete="off"
 					{...register("code")}
 				/>
@@ -95,6 +97,7 @@ export function ProfileFields({
 			<FormField id="employee-level" label="Level" error={error("level")}>
 				<Input
 					{...controlProps("employee-level", error("level"))}
+					placeholder="e.g. L3"
 					list="employee-levels"
 					autoComplete="off"
 					{...register("level")}

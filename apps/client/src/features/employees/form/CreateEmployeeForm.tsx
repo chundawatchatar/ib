@@ -1,7 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ReferenceDataResponse } from "@salary-manager/contracts";
-import { Alert, Button, FormField, Input, Select } from "@salary-manager/ui";
+import {
+	Alert,
+	Button,
+	Card,
+	CardFooter,
+	CardTitle,
+	cn,
+	FormField,
+	Input,
+	Select,
+} from "@salary-manager/ui";
 import { useNavigate } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import {
 	controlProps,
@@ -64,67 +75,98 @@ export function CreateEmployeeForm({
 
 	return (
 		<FormProvider {...form}>
-			<form
-				noValidate
-				aria-label="New employee"
-				onSubmit={onSubmit}
-				className="flex max-w-2xl flex-col gap-4"
-			>
-				{createEmployee.isError && (
-					<Alert variant="destructive">
-						{saveErrorMessage(createEmployee.error)}
-					</Alert>
-				)}
-				<div className="grid gap-4 sm:grid-cols-2">
-					<ProfileFields
-						reference={reference}
-						onCountryChange={suggestCurrency}
-					/>
-					<FormField
-						id="employee-currency"
-						label="Salary currency"
-						error={errors.currencyCode?.message}
+			<Card>
+				<form noValidate aria-label="New employee" onSubmit={onSubmit}>
+					{createEmployee.isError && (
+						<Alert variant="destructive" className="m-5 mb-0">
+							{saveErrorMessage(createEmployee.error)}
+						</Alert>
+					)}
+					<FormSection
+						title="Profile"
+						description="Who they are and where they sit in the organisation."
 					>
-						<Select
-							{...controlProps(
-								"employee-currency",
-								errors.currencyCode?.message,
-							)}
-							{...register("currencyCode")}
-						>
-							<option value="">Choose a currency</option>
-							{reference.currencies.map((currency) => (
-								<option key={currency.code} value={currency.code}>
-									{currency.code}, {currency.name}
-								</option>
-							))}
-						</Select>
-					</FormField>
-					<FormField
-						id="employee-salary"
-						label="Annual base salary"
-						error={errors.salary?.message}
-					>
-						<Input
-							{...controlProps("employee-salary", errors.salary?.message)}
-							inputMode="decimal"
-							autoComplete="off"
-							{...register("salary")}
+						<ProfileFields
+							reference={reference}
+							onCountryChange={suggestCurrency}
 						/>
-					</FormField>
-				</div>
-				<div className="flex gap-3">
-					<Button type="submit" disabled={createEmployee.isPending}>
-						{createEmployee.isPending ? "Adding…" : "Add employee"}
-					</Button>
-					<Button
-						variant="ghost"
-						onClick={() => navigate({ to: "/employees" })}
+					</FormSection>
+					<FormSection
+						title="Salary"
+						description="Their starting annual base salary. Choosing a country suggests its usual currency."
+						className="border-t border-border"
 					>
-						Cancel
-					</Button>
-				</div>
-			</form>
+						<FormField
+							id="employee-currency"
+							label="Salary currency"
+							error={errors.currencyCode?.message}
+						>
+							<Select
+								{...controlProps(
+									"employee-currency",
+									errors.currencyCode?.message,
+								)}
+								{...register("currencyCode")}
+							>
+								<option value="">Choose a currency</option>
+								{reference.currencies.map((currency) => (
+									<option key={currency.code} value={currency.code}>
+										{currency.code}, {currency.name}
+									</option>
+								))}
+							</Select>
+						</FormField>
+						<FormField
+							id="employee-salary"
+							label="Annual base salary"
+							error={errors.salary?.message}
+						>
+							<Input
+								{...controlProps("employee-salary", errors.salary?.message)}
+								inputMode="decimal"
+								autoComplete="off"
+								placeholder="e.g. 85000"
+								{...register("salary")}
+							/>
+						</FormField>
+					</FormSection>
+					<CardFooter className="justify-end border-t border-border">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => navigate({ to: "/employees" })}
+						>
+							Cancel
+						</Button>
+						<Button type="submit" size="sm" disabled={createEmployee.isPending}>
+							{createEmployee.isPending ? "Adding…" : "Add employee"}
+						</Button>
+					</CardFooter>
+				</form>
+			</Card>
 		</FormProvider>
+	);
+}
+
+/** A titled group of fields in two columns, separated within the card. */
+function FormSection({
+	title,
+	description,
+	className,
+	children,
+}: {
+	title: string;
+	description: string;
+	className?: string;
+	children: ReactNode;
+}) {
+	return (
+		<section className={cn("flex flex-col gap-4 p-5", className)}>
+			<div className="flex flex-col gap-1">
+				<CardTitle className="text-base">{title}</CardTitle>
+				<p className="m-0 text-sm text-muted-foreground">{description}</p>
+			</div>
+			<div className="grid gap-4 sm:grid-cols-2">{children}</div>
+		</section>
 	);
 }
