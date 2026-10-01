@@ -38,6 +38,9 @@ export function niceMaximum(value: number): number {
 	return step * magnitude;
 }
 
+// Above this many columns, labels would collide, so only the ends are labeled.
+const MAX_LABELED_COLUMNS = 8;
+
 /**
  * Single-series column chart: one hue, thin columns with rounded tops, hairline
  * gridlines, a tooltip on hover or focus, and the same data as a table.
@@ -109,9 +112,25 @@ export function ColumnChart({
 					))}
 				</ol>
 				<span />
+				{/* Label every column when they fit; otherwise only the two ends. */}
+				{data.length <= MAX_LABELED_COLUMNS && (
+					<div
+						aria-hidden="true"
+						className="hidden gap-0.5 pt-1 text-center text-xs text-muted-foreground sm:flex"
+					>
+						{data.map((datum) => (
+							<span key={datum.key} className="min-w-0 flex-1 truncate">
+								{datum.label}
+							</span>
+						))}
+					</div>
+				)}
 				<div
 					aria-hidden="true"
-					className="flex justify-between pt-1 text-xs text-muted-foreground"
+					className={cn(
+						"flex justify-between pt-1 text-xs text-muted-foreground",
+						data.length <= MAX_LABELED_COLUMNS && "sm:hidden",
+					)}
 				>
 					<span>{data[0]?.label}</span>
 					<span>{data.at(-1)?.label}</span>
