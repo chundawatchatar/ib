@@ -1,4 +1,6 @@
 export const ROUTE = {
+	PAY_INSIGHTS_GROUPS: "/api/insights/groups",
+	PAY_INSIGHTS_HISTOGRAM: "/api/insights/histogram",
 	PAY_INSIGHTS_SUMMARY: "/api/insights/summary",
 	EMPLOYEES: "/api/employees",
 	EMPLOYEE: "/api/employees/:id",

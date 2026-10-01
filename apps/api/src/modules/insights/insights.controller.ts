@@ -11,3 +11,24 @@ export function createInsightsController(
 			: { status: 422, body: result.error };
 	};
 }
+
+export function createInsightsGroupsController(
+	service: InsightsService,
+): AppRouteImplementation<typeof contract.getPayInsightsGroups> {
+	return async ({ query }) => {
+		const result = await service.groups(query);
+		return result.kind === "success"
+			? { status: 200, body: result.report }
+			: { status: 422, body: result.error };
+	};
+}
+export function createInsightsHistogramController(
+	service: InsightsService,
+): AppRouteImplementation<typeof contract.getPayInsightsHistogram> {
+	return async ({ query }) => {
+		const result = await service.histogram(query);
+		return result.kind === "success"
+			? { status: 200, body: result.report }
+			: { status: 422, body: result.error };
+	};
+}

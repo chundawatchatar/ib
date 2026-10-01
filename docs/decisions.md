@@ -174,3 +174,53 @@ currencies, losing large-value precision, or rounding each employee's conversion
 **Trade-off:** Clients need string-money formatting, planned as a shared common
 helper with the insights UI. Empty local reports have no currency summaries;
 empty USD reports have one USD summary with zero total/count and null statistics.
+
+
+## Grouped pay and readable salary distributions
+
+**Decision:** Group one dimension at a time (country, department, level, or job
+title), using stable codes/IDs and master-data labels. Local groups retain
+per-currency summaries. Levels use English numeric ordering, so L2 precedes L10.
+The populated-group response bound is 1,000,000, independent of seed size; the
+service checks cardinality first and returns 422 rather than truncating or
+failing response validation.
+
+Histograms describe the whole filtered population, separately per currency in
+local mode and together in USD mode. Choose the smallest 1, 2, or 5 × 10ⁿ
+major-unit width at least the population range divided by 10, and align the outer
+edges to multiples of that width. The resulting histogram has at most 11 bands.
+Numeric `width_bucket` assigns unrounded salaries; the last band includes its
+upper edge. Exact boundaries can contain fractional minor units. Contract schema
+notes specify boundary, constant-population, and empty-result behavior.
+
+**Why:** Round bands are easier to read than arbitrary min/max edges. SQL numeric
+arithmetic preserves FX fractions and avoids float-based logarithms and bucket
+assignment. A shared window-and-aggregate calculation selects percentile
+neighbors without joining the ordered population to itself, keeping grouped and
+whole-population summaries practical over 10,000 employees.
+
+**Trade-off:** Band counts vary, and an extreme outlier still compresses the bulk
+of salaries into a few bands. Filters change the bands; comparing two histograms
+requires reading their boundaries. This version does not add logarithmic scales,
+outlier clipping, fixed cross-report bands, or per-group histograms.
+
+
+Local performance sample (2026-10-01): macOS 26.6.2 arm64, Node 26.8.1,
+pnpm 11.15.1, PostgreSQL 17 in the local Compose container. The reports integration
+test installed real migrations and the deterministic 10,000-employee seed in a
+fresh test database. Timings measure loopback HTTP through parsed response JSON,
+one request per case, excluding migration and seed setup; no timing assertions.
+
+| Report | Local view | USD view |
+| --- | ---: | ---: |
+| Country groups | 53 ms | 29 ms |
+| Department groups | 28 ms | 31 ms |
+| Level groups | 28 ms | 27 ms |
+| Job-title groups | 26 ms | 30 ms |
+| Histogram | 11 ms | 14 ms |
+
+Directory requests with page size 1 took 9 ms without search, 16 ms for `EMP`,
+13 ms for `Alex`, and 14 ms for a nonexistent name. All four sampled cases were
+below the local 500 ms requirement. These are local samples, not a deployed or
+concurrent-load guarantee. Reproduce with the reports integration test's
+`reports the full seed` case and Vitest `--silent=false --reporter=verbose`.

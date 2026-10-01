@@ -7,7 +7,6 @@ completes it and move it to Done; `git log` records which commit that was.
 
 ## Next
 
-- [ ] Insights grouping (country, department, level, job title), salary histogram
 - [ ] Client data layer: TanStack Query provider, ts-rest client, `unwrap` helper, and router-loader integration
 - [ ] Directory UI with search, filters, and pagination
 - [ ] Employee form and salary edit UI (React Hook Form with contract Zod schemas) with loading, error, and conflict states
@@ -19,7 +18,6 @@ completes it and move it to Done; `git log` records which commit that was.
 - [ ] Deploy API, client, and PostgreSQL; run migrations and seed
 - [ ] Root README: overview, setup, deployed link, demo video, links to docs
 - [ ] `docs/ai-usage.md`: how agents, skills, and reviews were used, and where AI output was corrected
-- [ ] Performance check: directory search under 500 ms locally over 10,000 employees
 - [ ] Record the demo video
 
 ## Done
@@ -45,3 +43,6 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] Salary edit API: optimistic version check, audit row in the same transaction, conflict response for stale edits
 
 - [x] Pay insights: headcount, total, average, median, min, max, P25/P75 for the full filtered population; tested against the requirements acceptance numbers
+
+- [x] Insights grouping (country, department, level, job title), salary histogram
+- [x] Performance check: directory search under 500 ms locally over 10,000 employees (9–16 ms sampled; environment and timings in decisions)

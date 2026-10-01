@@ -4,6 +4,25 @@ import type { Services } from "./services";
 export function createTestServices(): Services {
 	return {
 		insights: {
+			groups: async (query) => ({
+				kind: "success",
+				report: {
+					view: query.view,
+					groupBy: query.groupBy,
+					headcount: 0,
+					rateDate: null,
+					groups: [],
+				},
+			}),
+			histogram: async (query) => ({
+				kind: "success",
+				report: {
+					view: query.view,
+					headcount: 0,
+					rateDate: null,
+					distributions: [],
+				},
+			}),
 			summary: async () => ({
 				kind: "success",
 				report: { view: "local", headcount: 0, rateDate: null, summaries: [] },
