@@ -101,3 +101,20 @@ which keeps directory search meaningful.
 (`salary_manager` on localhost:55432); deployed databases use `db:migrate`.
 
 **Why:** A reset command pointed at the wrong URL is destructive and irreversible.
+
+## API app factory and feature modules
+
+**Decision:** Build Express applications with `createApp({ services, logger })`;
+keep middleware assembly in the app factory, typed ts-rest controller registration
+in the router, and controller/service/query files together under feature modules.
+Startup owns the PostgreSQL connection and listener. Services own business rules
+and transaction boundaries; queries own Drizzle persistence when features need it.
+
+**Why:** Upcoming directory, salary-edit, and reporting features need clear
+ownership and injectable dependencies for HTTP tests. Contract validation stays
+in ts-rest, while shared middleware supplies request IDs, structured logging,
+bounded JSON parsing, and consistent error responses.
+
+**Trade-off:** The health endpoint is simple enough to fit in one file, but now
+establishes the module convention. Avoid generic base controllers or repositories;
+add query files and database dependencies when a feature actually uses them.

@@ -41,3 +41,4 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] shadcn/ui + Tailwind component library in `packages/ui` (Button, Input, SearchInput with debounce, Skeleton, Table, DataGrid, and form controls)
 - [x] Declare Node.js `>=22.9` in the root `engines` field
 - [x] Generate client routes through the Start Vite plugin in `typecheck` and `build`, so `pnpm check` works after route changes
+- [x] API foundation: app factory, feature controllers/services, request context and logging, centralized errors with field-level validation issues

@@ -2,14 +2,14 @@ import { once } from "node:events";
 import type { Server } from "node:http";
 import { contract } from "@salary-manager/contracts";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { app } from "./app.js";
+import { createApp } from "./app.js";
 
 describe("HTTP API", () => {
 	let server: Server;
 	let baseUrl: string;
 
 	beforeAll(async () => {
-		server = app.listen(0, "127.0.0.1");
+		server = createApp().listen(0, "127.0.0.1");
 		await once(server, "listening");
 		const address = server.address();
 		if (address === null || typeof address === "string") {
