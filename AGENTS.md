@@ -8,7 +8,7 @@ Clarify ambiguities before coding, and update it when agreed requirements change
 
 ## Local Agent Skills
 
-Read the [local skill index](.agents/skills/README.md) and the relevant skill before changing API endpoints, shared contracts/types, or backend/frontend tests.
+Read the [local skill index](.agents/skills/README.md) and the relevant skill before changing API endpoints, shared contracts/types, database schema/migrations/seed data, or backend/frontend tests.
 
 ## Project Structure & Module Organization
 

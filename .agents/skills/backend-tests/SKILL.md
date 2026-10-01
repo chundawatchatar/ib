@@ -34,6 +34,13 @@ Use requirements examples or independently calculated fixtures as the oracle. As
 
 Keep ordinary unit fixtures small. Test full seed correctness separately when required. Measure performance independently with environment/timings recorded; avoid flaky elapsed-time assertions in deterministic unit suites.
 
+## In this repository
+
+- Pure unit tests (`*.test.ts`) must not need PostgreSQL; `pnpm --filter <package> run test` excludes `*.integration.test.ts`.
+- Real database tests go in `*.integration.test.ts` and run with `pnpm test:db`, which needs `TEST_DATABASE_URL` (see `.env.example`). Each test creates a uniquely named database, applies the real migrations, and drops it in teardown. Never reset or clear the development database from tests.
+- Refer to reference data by name or code in tests, and read generated IDs back from the database; do not hard-code master-data UUIDs.
+- For generated seed data, assert properties (counts, uniqueness, ranges, ordering, determinism for a fixed seed) rather than exact rows.
+
 ## Run and report
 
 Run the relevant test and typecheck scripts, then repository lint/format checks. Add a project-owned test script/config only if tests are introduced into a project that lacks one. Report exactly which suites ran and the behaviors they prove, including limitations; a coverage percentage alone does not establish correctness.

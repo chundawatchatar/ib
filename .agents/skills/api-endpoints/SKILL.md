@@ -33,6 +33,7 @@ export type EmployeeResponse = z.infer<typeof employeeResponseSchema>;
 
 - Update the shared schemas, exported inferred types, and contract before the handler. Use those shared definitions in clients and servers.
 - Validate external input at runtime. Narrow unknown values, bound query sizes, allowlist dynamic sort/group fields, and parameterize database values.
+- Keep `@salary-manager/domain` (Drizzle tables and inferred row types) server-only. Map database rows into the contract's response schemas; never expose row types through contracts or common. Read the database-schema skill before changing tables.
 - Keep handlers focused on request orchestration. Keep domain/query logic in its owning backend project; separate concerns where behavior or testability warrants it, without adding a generic architecture by default.
 - Ensure middleware and handlers emit the documented status/body shapes for validation and domain failures. Preserve configured response validation. Avoid exposing internal errors or secrets in responses.
 - For state changes, preserve the required transaction, concurrency, and audit invariants. Invalid or stale requests must not produce partial writes. Retry or idempotency behavior should follow the actual API requirements.
