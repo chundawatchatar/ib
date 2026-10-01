@@ -30,6 +30,6 @@ Use the root Biome configuration for formatting and linting. Format with `pnpm r
 
 ## Routes and contracts
 
-Create routes in `src/routes/`. The development server generates `src/routeTree.gen.ts`; regenerate it explicitly with `pnpm --filter @salary-manager/client run generate-routes` before a standalone typecheck after route changes. The build script generates routes before typechecking and building.
+Create routes in `src/routes/`. The TanStack Start Vite plugin generates `src/routeTree.gen.ts`, including the Start `Register` block, whenever `dev` or a Vite build runs. `typecheck` and `build` regenerate it first, so `pnpm check` is always current; `generate-routes` runs that step on its own. Do not use the bare `tsr generate` CLI: it does not know about Start and drops the `Register` block.
 
 Do not manually edit the generated route tree. Share ts-rest API contracts through `packages/` as endpoints are introduced, following `AGENTS.md`.

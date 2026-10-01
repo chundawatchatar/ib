@@ -5,6 +5,9 @@
 	"description": "",
 	"type": "module",
 	"packageManager": "pnpm@11.15.1",
+	"engines": {
+		"node": ">=22.9"
+	},
 	"scripts": {
 		"biome": "biome check .",
 		"lint": "biome lint .",

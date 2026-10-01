@@ -3,12 +3,7 @@
 What to build next and in what order. Scope and acceptance criteria live in
 [requirements](requirements.md); reasoning lives in [decisions](decisions.md).
 Keep items small (about one commit each). Tick an item in the commit that
-completes it and add the commit hash.
-
-## Now
-
-- [ ] Declare Node.js `>=22.9` in the root `engines` field
-- [ ] Regenerate client routes in the client `typecheck` script so `pnpm check` works after route changes
+completes it and move it to Done; `git log` records which commit that was.
 
 ## Next
 
@@ -17,9 +12,9 @@ completes it and add the commit hash.
 - [ ] Salary edit API: optimistic version check, audit row in the same transaction, conflict response for stale edits
 - [ ] Pay insights: headcount, total, average, median, min, max, P25/P75 for the full filtered population; tested against the requirements acceptance numbers
 - [ ] Insights grouping (country, department, level, job title), salary histogram, local-currency and USD-normalized views
-- [ ] Frontend foundation: shadcn/ui + Tailwind in `packages/ui` (migrate Button and Input; add Skeleton, Table, SearchInput with debounce), TanStack Query provider, ts-rest client, `unwrap` helper, and router-loader integration in the client
+- [ ] Client data layer: TanStack Query provider, ts-rest client, `unwrap` helper, and router-loader integration
 - [ ] Directory UI with search, filters, and pagination
-- [ ] Employee form and salary edit UI with loading, error, and conflict states
+- [ ] Employee form and salary edit UI (React Hook Form with contract Zod schemas) with loading, error, and conflict states
 - [ ] Insights UI
 - [ ] CI: `pnpm check` and `pnpm test:db` against a PostgreSQL service
 
@@ -33,12 +28,16 @@ completes it and add the commit hash.
 
 ## Done
 
-- [x] Workspace, TypeScript, and Biome setup (bd6d37d)
-- [x] Shared agent guidelines (603f643)
-- [x] Client app (e99f0a8), typed API with bundling (0e8f80f), shared UI package (f84fcfb)
-- [x] One-page requirements (8ee05f2)
-- [x] Local agent skills (c2b505d)
-- [x] PostgreSQL schema, migrations, and deterministic 10,000-employee seed (2f75924)
-- [x] API database connectivity check and graceful shutdown (d18cbac)
-- [x] Database-schema skill and backend/API rules (6a41404)
-- [x] `pnpm check` and aligned workspace scripts (049a962)
+- [x] Workspace, TypeScript, and Biome setup
+- [x] Shared agent guidelines
+- [x] Client app, typed API with bundling, shared UI package
+- [x] One-page requirements
+- [x] Local agent skills
+- [x] PostgreSQL schema, migrations, and deterministic 10,000-employee seed
+- [x] API database connectivity check and graceful shutdown
+- [x] Database-schema skill and backend/API rules
+- [x] `pnpm check` and aligned workspace scripts
+- [x] Development plan and frontend-development skill
+- [x] shadcn/ui + Tailwind component library in `packages/ui` (Button, Input, SearchInput with debounce, Skeleton, Table, DataGrid, and form controls)
+- [x] Declare Node.js `>=22.9` in the root `engines` field
+- [x] Generate client routes through the Start Vite plugin in `typecheck` and `build`, so `pnpm check` works after route changes

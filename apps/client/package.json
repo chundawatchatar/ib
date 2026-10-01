@@ -7,12 +7,12 @@
 	},
 	"scripts": {
 		"dev": "vite dev --port 3000",
-		"build": "tsr generate && tsc --noEmit && vite build",
+		"build": "vite build && tsc --noEmit",
 		"preview": "vite preview",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "pnpm run generate-routes && tsc --noEmit",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"generate-routes": "tsr generate"
+		"generate-routes": "vite build --logLevel warn"
 	},
 	"dependencies": {
 		"@salary-manager/ui": "workspace:*",
@@ -28,7 +28,6 @@
 	"devDependencies": {
 		"@tailwindcss/typography": "^0.5.16",
 		"@tanstack/devtools-vite": "latest",
-		"@tanstack/router-cli": "^1.132.0",
 		"@testing-library/jest-dom": "^7.0.1",
 		"@testing-library/react": "^16.3.3",
 		"@types/node": "^26.6.3",
