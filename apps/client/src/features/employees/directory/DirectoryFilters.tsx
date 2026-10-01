@@ -1,6 +1,15 @@
 import type { ReferenceDataResponse } from "@salary-manager/contracts";
 import { FormField, Input, SearchInput, Select } from "@salary-manager/ui";
-import { type DirectorySearch, salaryBound } from "./directory-search";
+import type { ChangeEvent } from "react";
+import { type DirectorySearch, wholeAmount } from "./directory-search";
+
+// Remove anything but digits as it is typed or pasted. Only rewrite the value
+// when it changed, so the caret stays put while typing digits.
+function keepWholeAmount(event: ChangeEvent<HTMLInputElement>) {
+	const input = event.currentTarget;
+	const cleaned = wholeAmount(input.value);
+	if (cleaned !== input.value) input.value = cleaned;
+}
 
 type DirectoryFiltersProps = {
 	search: DirectorySearch;
@@ -13,18 +22,6 @@ export function DirectoryFilters({
 	reference,
 	onChange,
 }: DirectoryFiltersProps) {
-	const salaryError = (value: string | undefined) =>
-		value !== undefined &&
-		search.currencyCode !== undefined &&
-		salaryBound(value, search.currencyCode, reference.currencies) === undefined;
-	const minInvalid = salaryError(search.salaryMin);
-	const maxInvalid = salaryError(search.salaryMax);
-	const salaryRangeHelp = search.currencyCode
-		? minInvalid || maxInvalid
-			? `Enter an amount in ${search.currencyCode}, such as 85000.`
-			: undefined
-		: "Choose a currency to filter by salary.";
-
 	return (
 		<fieldset className="m-0 grid grid-cols-2 gap-3 border-0 p-0 sm:grid-cols-4 lg:grid-cols-8 xl:grid-cols-1">
 			<legend className="sr-only">Filter employees</legend>
@@ -145,13 +142,13 @@ export function DirectoryFilters({
 					<Input
 						id="filter-salary-min"
 						placeholder="Min"
-						inputMode="decimal"
+						inputMode="numeric"
 						disabled={!search.currencyCode}
 						defaultValue={search.salaryMin}
-						aria-invalid={minInvalid || undefined}
-						aria-describedby="filter-salary-help"
+						maxLength={12}
+						onChange={keepWholeAmount}
 						onDebouncedChange={(value) =>
-							onChange({ salaryMin: value.trim() || undefined })
+							onChange({ salaryMin: wholeAmount(value) || undefined })
 						}
 					/>
 				</FormField>
@@ -162,26 +159,16 @@ export function DirectoryFilters({
 					<Input
 						id="filter-salary-max"
 						placeholder="Max"
-						inputMode="decimal"
+						inputMode="numeric"
 						disabled={!search.currencyCode}
 						defaultValue={search.salaryMax}
-						aria-invalid={maxInvalid || undefined}
-						aria-describedby="filter-salary-help"
+						maxLength={12}
+						onChange={keepWholeAmount}
 						onDebouncedChange={(value) =>
-							onChange({ salaryMax: value.trim() || undefined })
+							onChange({ salaryMax: wholeAmount(value) || undefined })
 						}
 					/>
 				</FormField>
-				<p
-					id="filter-salary-help"
-					className={
-						minInvalid || maxInvalid
-							? "col-span-2 m-0 text-xs sm:col-span-3 xl:col-span-2 text-destructive"
-							: "col-span-2 m-0 text-xs sm:col-span-3 xl:col-span-2 text-muted-foreground"
-					}
-				>
-					{salaryRangeHelp}
-				</p>
 			</fieldset>
 		</fieldset>
 	);

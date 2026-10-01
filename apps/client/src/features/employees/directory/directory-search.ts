@@ -12,6 +12,21 @@ const text = z
 	.optional()
 	.catch(undefined);
 
+/**
+ * Salary filters take whole amounts: drop any decimal part, then everything
+ * that is not a digit ("85,000.50" → "85000"), so a bound is always valid.
+ */
+export function wholeAmount(value: string): string {
+	return (value.split(".")[0] ?? "").replace(/\D/g, "");
+}
+
+const amount = z
+	.union([z.string(), z.number()])
+	.transform((value) => wholeAmount(String(value)))
+	.pipe(z.string().min(1))
+	.optional()
+	.catch(undefined);
+
 export const sortFields = [
 	"name",
 	"code",
@@ -31,8 +46,8 @@ export const directorySearchSchema = z.object({
 	currencyCode: text,
 	status: z.enum(["active", "inactive"]).optional().catch(undefined),
 	/** Major units as typed, such as "85000.50"; converted with the currency's precision. */
-	salaryMin: text,
-	salaryMax: text,
+	salaryMin: amount,
+	salaryMax: amount,
 	sortBy: z.enum(sortFields).optional().catch(undefined),
 	sortDirection: z.enum(["asc", "desc"]).optional().catch(undefined),
 });
@@ -56,7 +71,7 @@ export function hasFilters(search: DirectorySearch): boolean {
 }
 
 /** Salary bound in minor units, or undefined when absent or not a valid amount. */
-export function salaryBound(
+function salaryBound(
 	value: string | undefined,
 	currencyCode: string | undefined,
 	currencies: ReferenceDataResponse["currencies"],

@@ -87,9 +87,11 @@ describe("employee directory", () => {
 			target: { value: "USD" },
 		});
 		await waitFor(() => expect(salaryFrom).toBeEnabled());
-		fireEvent.change(salaryFrom, { target: { value: "85000.5" } });
+		// Only whole amounts: separators and the decimal part are dropped.
+		fireEvent.change(salaryFrom, { target: { value: "85,000.50" } });
+		expect(salaryFrom).toHaveValue("85000");
 		await waitFor(() =>
-			expect(lastListParams(requests)?.get("salaryMin")).toBe("8500050"),
+			expect(lastListParams(requests)?.get("salaryMin")).toBe("8500000"),
 		);
 		expect(lastListParams(requests)?.get("currencyCode")).toBe("USD");
 
@@ -101,20 +103,18 @@ describe("employee directory", () => {
 		expect(lastListParams(requests)?.get("sortDirection")).toBe("desc");
 	});
 
-	it("flags a salary bound that is not an amount without sending it", async () => {
+	it("keeps only the whole amount of salary bounds from the URL", async () => {
 		const { requests } = renderApp(
-			"/employees?currencyCode=%22JPY%22&salaryMin=%2210.5%22",
+			"/employees?currencyCode=%22JPY%22&salaryMin=%2210.5%22&salaryMax=%22abc%22",
 			api(() => ({ status: 200, body: directoryPage([employee()]) })),
 		);
 
-		expect(await screen.findByLabelText("Salary from")).toHaveAttribute(
-			"aria-invalid",
-			"true",
+		expect(await screen.findByLabelText("Salary from")).toHaveValue("10");
+		expect(screen.getByLabelText("Salary to")).toHaveValue("");
+		await waitFor(() =>
+			expect(lastListParams(requests)?.get("salaryMin")).toBe("10"),
 		);
-		expect(
-			screen.getByText("Enter an amount in JPY, such as 85000."),
-		).toBeVisible();
-		expect(lastListParams(requests)?.has("salaryMin")).toBe(false);
+		expect(lastListParams(requests)?.has("salaryMax")).toBe(false);
 	});
 
 	it("explains an empty result and clears the filters", async () => {
