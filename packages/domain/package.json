@@ -1,0 +1,30 @@
+{
+	"name": "@salary-manager/domain",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"scripts": {
+		"build": "tsc --noEmit",
+		"dev": "tsc --watch",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run --exclude '**/*.integration.test.ts'",
+		"test:db": "vitest run integration.test",
+		"db:generate": "drizzle-kit generate && biome format --write migrations/meta",
+		"db:migrate": "tsx src/cli.ts migrate",
+		"db:reset": "tsx src/cli.ts reset",
+		"db:seed": "tsx src/cli.ts seed"
+	},
+	"dependencies": {
+		"drizzle-orm": "^0.45.1",
+		"pg": "^8.16.3"
+	},
+	"devDependencies": {
+		"@faker-js/faker": "10.6.0",
+		"@types/pg": "^8.15.6",
+		"drizzle-kit": "^0.31.8",
+		"tsx": "^4.23.15",
+		"vitest": "^5.0.2"
+	}
+}

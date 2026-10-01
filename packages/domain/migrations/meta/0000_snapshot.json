@@ -1,0 +1,634 @@
+{
+	"id": "174c02fc-5cb2-4de7-80f5-ec89b2a8af81",
+	"prevId": "00000000-0000-0000-0000-000000000000",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"public.countries": {
+			"name": "countries",
+			"schema": "",
+			"columns": {
+				"code": {
+					"name": "code",
+					"type": "varchar(2)",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"default_currency": {
+					"name": "default_currency",
+					"type": "varchar(3)",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"countries_default_currency_currencies_code_fk": {
+					"name": "countries_default_currency_currencies_code_fk",
+					"tableFrom": "countries",
+					"tableTo": "currencies",
+					"columnsFrom": ["default_currency"],
+					"columnsTo": ["code"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {
+				"countries_code_valid": {
+					"name": "countries_code_valid",
+					"value": "\"countries\".\"code\" ~ '^[A-Z]{2}$'"
+				},
+				"countries_name_valid": {
+					"name": "countries_name_valid",
+					"value": "length(trim(\"countries\".\"name\")) > 0"
+				}
+			},
+			"isRLSEnabled": false
+		},
+		"public.currencies": {
+			"name": "currencies",
+			"schema": "",
+			"columns": {
+				"code": {
+					"name": "code",
+					"type": "varchar(3)",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"minor_units": {
+					"name": "minor_units",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {
+				"currencies_code_valid": {
+					"name": "currencies_code_valid",
+					"value": "\"currencies\".\"code\" ~ '^[A-Z]{3}$'"
+				},
+				"currencies_precision_valid": {
+					"name": "currencies_precision_valid",
+					"value": "\"currencies\".\"minor_units\" between 0 and 6"
+				},
+				"currencies_name_valid": {
+					"name": "currencies_name_valid",
+					"value": "length(trim(\"currencies\".\"name\")) > 0"
+				}
+			},
+			"isRLSEnabled": false
+		},
+		"public.departments": {
+			"name": "departments",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"departments_name_unique": {
+					"name": "departments_name_unique",
+					"nullsNotDistinct": false,
+					"columns": ["name"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {
+				"departments_name_valid": {
+					"name": "departments_name_valid",
+					"value": "length(trim(\"departments\".\"name\")) > 0"
+				}
+			},
+			"isRLSEnabled": false
+		},
+		"public.employees": {
+			"name": "employees",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"code": {
+					"name": "code",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"country_code": {
+					"name": "country_code",
+					"type": "varchar(2)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"currency_code": {
+					"name": "currency_code",
+					"type": "varchar(3)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"department_id": {
+					"name": "department_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"level": {
+					"name": "level",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"job_title_id": {
+					"name": "job_title_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"salary_minor_units": {
+					"name": "salary_minor_units",
+					"type": "bigint",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"active": {
+					"name": "active",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true,
+					"default": true
+				},
+				"version": {
+					"name": "version",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"default": 1
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"employees_country_idx": {
+					"name": "employees_country_idx",
+					"columns": [
+						{
+							"expression": "country_code",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"employees_currency_idx": {
+					"name": "employees_currency_idx",
+					"columns": [
+						{
+							"expression": "currency_code",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"employees_department_idx": {
+					"name": "employees_department_idx",
+					"columns": [
+						{
+							"expression": "department_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"employees_job_title_idx": {
+					"name": "employees_job_title_idx",
+					"columns": [
+						{
+							"expression": "job_title_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"employees_level_idx": {
+					"name": "employees_level_idx",
+					"columns": [
+						{
+							"expression": "level",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"employees_salary_idx": {
+					"name": "employees_salary_idx",
+					"columns": [
+						{
+							"expression": "salary_minor_units",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {
+				"employees_country_code_countries_code_fk": {
+					"name": "employees_country_code_countries_code_fk",
+					"tableFrom": "employees",
+					"tableTo": "countries",
+					"columnsFrom": ["country_code"],
+					"columnsTo": ["code"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"employees_currency_code_currencies_code_fk": {
+					"name": "employees_currency_code_currencies_code_fk",
+					"tableFrom": "employees",
+					"tableTo": "currencies",
+					"columnsFrom": ["currency_code"],
+					"columnsTo": ["code"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"employees_department_id_departments_id_fk": {
+					"name": "employees_department_id_departments_id_fk",
+					"tableFrom": "employees",
+					"tableTo": "departments",
+					"columnsFrom": ["department_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"employees_job_title_id_job_titles_id_fk": {
+					"name": "employees_job_title_id_job_titles_id_fk",
+					"tableFrom": "employees",
+					"tableTo": "job_titles",
+					"columnsFrom": ["job_title_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"employees_code_unique": {
+					"name": "employees_code_unique",
+					"nullsNotDistinct": false,
+					"columns": ["code"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {
+				"employees_salary_valid": {
+					"name": "employees_salary_valid",
+					"value": "\"employees\".\"salary_minor_units\" between 1 and 9007199254740991"
+				},
+				"employees_version_valid": {
+					"name": "employees_version_valid",
+					"value": "\"employees\".\"version\" > 0"
+				},
+				"employees_text_valid": {
+					"name": "employees_text_valid",
+					"value": "length(trim(\"employees\".\"code\")) > 0 and length(trim(\"employees\".\"name\")) > 0 and length(trim(\"employees\".\"level\")) > 0"
+				}
+			},
+			"isRLSEnabled": false
+		},
+		"public.fx_rates": {
+			"name": "fx_rates",
+			"schema": "",
+			"columns": {
+				"source_currency_code": {
+					"name": "source_currency_code",
+					"type": "varchar(3)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"target_currency_code": {
+					"name": "target_currency_code",
+					"type": "varchar(3)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"rate_date": {
+					"name": "rate_date",
+					"type": "date",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"rate": {
+					"name": "rate",
+					"type": "numeric",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"fx_rates_source_currency_code_currencies_code_fk": {
+					"name": "fx_rates_source_currency_code_currencies_code_fk",
+					"tableFrom": "fx_rates",
+					"tableTo": "currencies",
+					"columnsFrom": ["source_currency_code"],
+					"columnsTo": ["code"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"fx_rates_target_currency_code_currencies_code_fk": {
+					"name": "fx_rates_target_currency_code_currencies_code_fk",
+					"tableFrom": "fx_rates",
+					"tableTo": "currencies",
+					"columnsFrom": ["target_currency_code"],
+					"columnsTo": ["code"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {
+				"fx_rates_source_currency_code_target_currency_code_rate_date_pk": {
+					"name": "fx_rates_source_currency_code_target_currency_code_rate_date_pk",
+					"columns": [
+						"source_currency_code",
+						"target_currency_code",
+						"rate_date"
+					]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {
+				"fx_rates_rate_valid": {
+					"name": "fx_rates_rate_valid",
+					"value": "\"fx_rates\".\"rate\" > 0 and \"fx_rates\".\"rate\" < 'Infinity'::numeric"
+				}
+			},
+			"isRLSEnabled": false
+		},
+		"public.job_titles": {
+			"name": "job_titles",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"job_titles_name_unique": {
+					"name": "job_titles_name_unique",
+					"nullsNotDistinct": false,
+					"columns": ["name"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {
+				"job_titles_name_valid": {
+					"name": "job_titles_name_valid",
+					"value": "length(trim(\"job_titles\".\"name\")) > 0"
+				}
+			},
+			"isRLSEnabled": false
+		},
+		"public.salary_changes": {
+			"name": "salary_changes",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"employee_id": {
+					"name": "employee_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"old_salary_minor_units": {
+					"name": "old_salary_minor_units",
+					"type": "bigint",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"new_salary_minor_units": {
+					"name": "new_salary_minor_units",
+					"type": "bigint",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"old_currency_code": {
+					"name": "old_currency_code",
+					"type": "varchar(3)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"new_currency_code": {
+					"name": "new_currency_code",
+					"type": "varchar(3)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"employee_version": {
+					"name": "employee_version",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"changed_at": {
+					"name": "changed_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"reason": {
+					"name": "reason",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {
+				"salary_changes_employee_date_idx": {
+					"name": "salary_changes_employee_date_idx",
+					"columns": [
+						{
+							"expression": "employee_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						},
+						{
+							"expression": "changed_at",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {
+				"salary_changes_employee_id_employees_id_fk": {
+					"name": "salary_changes_employee_id_employees_id_fk",
+					"tableFrom": "salary_changes",
+					"tableTo": "employees",
+					"columnsFrom": ["employee_id"],
+					"columnsTo": ["id"],
+					"onDelete": "restrict",
+					"onUpdate": "no action"
+				},
+				"salary_changes_old_currency_code_currencies_code_fk": {
+					"name": "salary_changes_old_currency_code_currencies_code_fk",
+					"tableFrom": "salary_changes",
+					"tableTo": "currencies",
+					"columnsFrom": ["old_currency_code"],
+					"columnsTo": ["code"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"salary_changes_new_currency_code_currencies_code_fk": {
+					"name": "salary_changes_new_currency_code_currencies_code_fk",
+					"tableFrom": "salary_changes",
+					"tableTo": "currencies",
+					"columnsFrom": ["new_currency_code"],
+					"columnsTo": ["code"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"salary_changes_employee_version_unique": {
+					"name": "salary_changes_employee_version_unique",
+					"nullsNotDistinct": false,
+					"columns": ["employee_id", "employee_version"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {
+				"salary_changes_amounts_valid": {
+					"name": "salary_changes_amounts_valid",
+					"value": "\"salary_changes\".\"old_salary_minor_units\" between 1 and 9007199254740991 and \"salary_changes\".\"new_salary_minor_units\" between 1 and 9007199254740991"
+				},
+				"salary_changes_version_valid": {
+					"name": "salary_changes_version_valid",
+					"value": "\"salary_changes\".\"employee_version\" > 1"
+				}
+			},
+			"isRLSEnabled": false
+		}
+	},
+	"enums": {},
+	"schemas": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"views": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
+}

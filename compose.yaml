@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: salary_manager
+      POSTGRES_USER: salary_manager
+      POSTGRES_PASSWORD: local-development-only
+    ports:
+      # Uncommon host port so an existing local PostgreSQL on 5432 doesn't clash.
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U salary_manager -d salary_manager"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  postgres_data:

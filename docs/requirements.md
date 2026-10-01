@@ -24,7 +24,7 @@ Give ACME's **HR Manager** a web app to maintain salary records for ~10,000 empl
 
 **3. Quality**
 - Loading, empty, and error states; accessible controls; durable storage (data survives restart).
-- Deterministic seed script (fixed random seed) for 10,000 employees across ~10 countries; fast unit tests on core logic.
+- Deterministic seed script (`db:seed`, fixed random seed) for 10,000 employees across 10 countries, with realistic pay by country, level, and department. Master data (currencies, countries, departments, job titles, FX rates) is installed by migrations; the seed only adds employees, atomically, into empty tables, and a repeat seed fails without changes. Fast unit tests on core logic.
 
 ## Deliberately left out (and why)
 | Excluded | Reason |
@@ -42,3 +42,10 @@ Give ACME's **HR Manager** a web app to maintain salary records for ~10,000 empl
 - **After editing USD 150,000 → 160,000:** USD group total 260,000, avg 130,000. Normalized total 359,000, avg 119,666.67, median 100,000. EUR group and counts unchanged.
 - **Filters/counts** cover all matching records across pages; directory search over 10,000 records responds in under 500 ms locally.
 - **Failure safety:** an invalid or conflicting (stale) edit leaves data unchanged; a successful edit survives restart; a change-log row exists for every successful edit.
+
+## Database foundation
+- PostgreSQL 17 runs locally through root Docker Compose with localhost-only access, a health check, and persistent storage. `db:up` starts it; `db:down` retains data.
+- Server-only `@salary-manager/domain` owns Drizzle entities, inferred persistence types, connections, and committed SQL migrations. API contracts remain separate.
+- `db:generate` generates migrations for review; `db:migrate` applies them explicitly. API startup checks connectivity and shutdown closes connections; startup never migrates.
+- `db:reset` drops/recreates only the configured local Compose development database and applies migrations, installing master data without seeding employees.
+- The initial-development baseline has exactly two migrations: initial schema and master data. Master data includes countries with optional default currencies, currencies and minor-unit precision, departments, job titles, and dated exact-decimal FX rates. Employees reference departments and job titles; titles can be shared across departments and level remains text. Employee salary currency remains explicit. Salary audit history retains old/new currencies and employee version, with an optional change reason. Salary-edit workflows and reporting are subsequent feature work.

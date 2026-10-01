@@ -15,7 +15,14 @@
 		"dev:client": "pnpm --filter @salary-manager/client run dev",
 		"build": "pnpm -r run build",
 		"typecheck": "pnpm -r run typecheck",
-		"test": "pnpm -r run test"
+		"test": "pnpm -r run test",
+		"db:up": "docker compose up -d --wait db",
+		"db:down": "docker compose down",
+		"db:generate": "pnpm --filter @salary-manager/domain run db:generate",
+		"db:migrate": "pnpm --filter @salary-manager/domain run db:migrate",
+		"db:reset": "pnpm --filter @salary-manager/domain run db:reset",
+		"db:seed": "pnpm --filter @salary-manager/domain run db:seed",
+		"test:db": "pnpm --filter @salary-manager/domain run test:db"
 	},
 	"keywords": [],
 	"author": "",
