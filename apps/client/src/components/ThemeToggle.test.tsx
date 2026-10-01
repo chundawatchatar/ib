@@ -21,9 +21,7 @@ describe("ThemeToggle", () => {
 		window.localStorage.setItem("theme", "dark");
 		render(<ThemeToggle />);
 
-		expect(
-			screen.getByRole("button", { name: /Theme mode: dark/ }),
-		).toBeVisible();
+		expect(screen.getByRole("button", { name: "Theme: Dark" })).toBeVisible();
 		expect(document.documentElement).toHaveClass("dark");
 		expect(document.documentElement).toHaveAttribute("data-theme", "dark");
 	});
@@ -32,29 +30,30 @@ describe("ThemeToggle", () => {
 		window.localStorage.setItem("theme", "invalid");
 		render(<ThemeToggle />);
 
-		expect(
-			screen.getByRole("button", { name: /Theme mode: auto/ }),
-		).toBeVisible();
+		expect(screen.getByRole("button", { name: "Theme: System" })).toBeVisible();
 		expect(document.documentElement).toHaveClass("light");
 		expect(document.documentElement).not.toHaveAttribute("data-theme");
 	});
 
-	it("cycles through light, dark, and system mode and persists the selection", () => {
+	it("switches between light, dark, and system mode and persists the choice", async () => {
 		render(<ThemeToggle />);
-		const button = screen.getByRole("button");
+		const choose = async (name: string) => {
+			fireEvent.keyDown(screen.getByRole("button", { name: /^Theme:/ }), {
+				key: "Enter",
+			});
+			fireEvent.click(await screen.findByRole("menuitemradio", { name }));
+		};
 
-		fireEvent.click(button);
-		expect(button).toHaveTextContent("Light");
+		await choose("Light");
+		expect(screen.getByRole("button", { name: "Theme: Light" })).toBeVisible();
 		expect(window.localStorage.getItem("theme")).toBe("light");
 		expect(document.documentElement).toHaveAttribute("data-theme", "light");
 
-		fireEvent.click(button);
-		expect(button).toHaveTextContent("Dark");
+		await choose("Dark");
 		expect(window.localStorage.getItem("theme")).toBe("dark");
 		expect(document.documentElement).toHaveClass("dark");
 
-		fireEvent.click(button);
-		expect(button).toHaveTextContent("Auto");
+		await choose("System");
 		expect(window.localStorage.getItem("theme")).toBe("auto");
 		expect(document.documentElement).not.toHaveAttribute("data-theme");
 	});

@@ -1,30 +1,36 @@
 import { Link } from "@tanstack/react-router";
+import { Logo } from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 
+// The active page is shown in the accent color; the others stay muted.
 const navLinkClass =
-	"rounded-ui px-2 py-1 text-sm font-medium text-muted-foreground no-underline hover:text-foreground";
+	"flex h-full items-center px-2 text-sm font-medium no-underline";
+const inactiveNavLinkClass = "text-muted-foreground hover:text-foreground";
+const activeNavLinkClass = "text-primary";
 
 export default function Header() {
 	return (
 		<header className="border-b border-border bg-surface">
 			<nav
 				aria-label="Main"
-				className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3"
+				className="mx-auto flex h-14 max-w-7xl items-center gap-8 px-4"
 			>
 				<Link
 					to="/"
-					className="text-base font-semibold text-foreground no-underline"
+					className="flex items-center gap-2 text-[15px] font-semibold tracking-tight text-foreground no-underline"
 				>
+					<Logo className="size-6 text-primary" />
 					Salary Manager
 				</Link>
-				<div className="flex items-center gap-1">
+				<div className="flex h-full items-center gap-2">
 					<Link
 						to="/employees"
 						className={navLinkClass}
 						activeProps={{
-							className: "text-foreground",
+							className: activeNavLinkClass,
 							"aria-current": "page",
 						}}
+						inactiveProps={{ className: inactiveNavLinkClass }}
 					>
 						Employees
 					</Link>
@@ -32,9 +38,10 @@ export default function Header() {
 						to="/insights"
 						className={navLinkClass}
 						activeProps={{
-							className: "text-foreground",
+							className: activeNavLinkClass,
 							"aria-current": "page",
 						}}
+						inactiveProps={{ className: inactiveNavLinkClass }}
 					>
 						Insights
 					</Link>

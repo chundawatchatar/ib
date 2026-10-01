@@ -1,7 +1,27 @@
-import { Button } from "@salary-manager/ui";
+import {
+	Button,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuTrigger,
+	Icon,
+	type IconComponent,
+	Icons,
+} from "@salary-manager/ui";
 import { useEffect, useState } from "react";
 
 type ThemeMode = "light" | "dark" | "auto";
+
+const themeOptions = [
+	{ value: "light", label: "Light", icon: Icons.Sun },
+	{ value: "dark", label: "Dark", icon: Icons.Moon },
+	{ value: "auto", label: "System", icon: Icons.Monitor },
+] as const satisfies readonly {
+	value: ThemeMode;
+	label: string;
+	icon: IconComponent;
+}[];
 
 function getInitialMode(): ThemeMode {
 	if (typeof window === "undefined") {
@@ -55,28 +75,43 @@ export default function ThemeToggle() {
 		};
 	}, [mode]);
 
-	function toggleMode() {
-		const nextMode: ThemeMode =
-			mode === "light" ? "dark" : mode === "dark" ? "auto" : "light";
+	function selectMode(nextMode: ThemeMode) {
 		setMode(nextMode);
 		applyThemeMode(nextMode);
 		window.localStorage.setItem("theme", nextMode);
 	}
 
-	const label =
-		mode === "auto"
-			? "Theme mode: auto (system). Click to switch to light mode."
-			: `Theme mode: ${mode}. Click to switch mode.`;
+	const current = themeOptions.find((option) => option.value === mode);
 
 	return (
-		<Button
-			variant="ghost"
-			size="sm"
-			onClick={toggleMode}
-			aria-label={label}
-			title={label}
-		>
-			{mode === "auto" ? "Auto" : mode === "dark" ? "Dark" : "Light"}
-		</Button>
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button
+					variant="ghost"
+					size="icon"
+					aria-label={`Theme: ${current?.label ?? "System"}`}
+					title="Theme"
+					className="text-muted-foreground hover:text-foreground"
+				>
+					<Icon icon={current?.icon ?? Icons.Monitor} />
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent>
+				<DropdownMenuRadioGroup
+					value={mode}
+					onValueChange={(value) => {
+						const next = themeOptions.find((option) => option.value === value);
+						if (next) selectMode(next.value);
+					}}
+				>
+					{themeOptions.map((option) => (
+						<DropdownMenuRadioItem key={option.value} value={option.value}>
+							<Icon icon={option.icon} />
+							{option.label}
+						</DropdownMenuRadioItem>
+					))}
+				</DropdownMenuRadioGroup>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 }
