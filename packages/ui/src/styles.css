@@ -18,3 +18,27 @@
 	--color-chart: var(--ui-chart, #1f6fa8);
 	--radius-ui: var(--ui-radius, 0.5rem);
 }
+
+/*
+ * Fade at the bottom of a scroll area while more content sits below. Hidden
+ * when nothing overflows, at the end of the scroll, and where scroll-driven
+ * animations are unsupported.
+ */
+.ui-scroll-fade {
+	opacity: 0;
+}
+@supports (animation-timeline: scroll()) {
+	.ui-scroll-fade {
+		animation: ui-scroll-fade linear both;
+		animation-timeline: scroll(nearest block);
+		animation-range: calc(100% - 2.5rem) 100%;
+	}
+}
+@keyframes ui-scroll-fade {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}

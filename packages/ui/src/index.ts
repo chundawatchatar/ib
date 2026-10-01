@@ -11,6 +11,7 @@ export * from "./components/Card";
 export * from "./components/Checkbox";
 export * from "./components/ColumnChart";
 export * from "./components/DataGrid";
+export * from "./components/EmptyState";
 export * from "./components/FormField";
 export * from "./components/Icon";
 export * from "./components/Input";

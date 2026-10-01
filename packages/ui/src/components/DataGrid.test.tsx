@@ -135,3 +135,23 @@ it("right-aligns columns marked as numeric", () => {
 		"text-right",
 	);
 });
+
+// Regression: new filters showed the first page at the old scroll offset.
+it("scrolls back to the first row when the results change", () => {
+	const grid = (key: string) => (
+		<DataGrid
+			label="Employees"
+			columns={columns}
+			data={[{ name: "Ada" }]}
+			scrollResetKey={key}
+		/>
+	);
+	const { rerender } = render(grid("search=a"));
+	const scrollArea = screen.getByRole("table").parentElement;
+	if (!scrollArea) throw new Error("missing scroll area");
+	scrollArea.scrollTop = 200;
+	rerender(grid("search=a"));
+	expect(scrollArea.scrollTop).toBe(200);
+	rerender(grid("search=b"));
+	expect(scrollArea.scrollTop).toBe(0);
+});

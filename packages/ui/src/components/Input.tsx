@@ -1,13 +1,15 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { type ComponentProps, useEffect, useRef } from "react";
-import { cn, disabledState, focusRing } from "../lib/utils";
+import { cn, disabledState } from "../lib/utils";
 import { Icon, type IconComponent } from "./Icon";
 
 // Shared by Input, Select, and Textarea. Fields default to the compact size.
 export const fieldVariants = cva(
 	[
 		"box-border w-full rounded-ui border border-border bg-surface text-foreground placeholder:text-muted-foreground aria-invalid:border-destructive",
-		focusRing,
+		// Fields show focus on every click, so only recolor the border rather
+		// than use the offset ring buttons show for keyboard focus.
+		"outline-none focus-visible:border-ring aria-invalid:focus-visible:border-destructive",
 		disabledState,
 	],
 	{
