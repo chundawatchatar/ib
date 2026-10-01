@@ -26,9 +26,13 @@ export function DirectoryFilters({
 		: "Choose a currency to filter by salary.";
 
 	return (
-		<fieldset className="m-0 grid grid-cols-2 gap-3 border-0 p-0 sm:grid-cols-4 lg:grid-cols-8">
+		<fieldset className="m-0 grid grid-cols-2 gap-3 border-0 p-0 sm:grid-cols-4 lg:grid-cols-8 xl:grid-cols-1">
 			<legend className="sr-only">Filter employees</legend>
-			<FormField id="filter-search" label="Search" className="col-span-2">
+			<FormField
+				id="filter-search"
+				label="Search"
+				className="col-span-2 xl:col-span-1"
+			>
 				<SearchInput
 					id="filter-search"
 					placeholder="Name or employee code"
@@ -98,41 +102,49 @@ export function DirectoryFilters({
 						});
 					}}
 				>
-					<option value="">All</option>
+					<option value="">All statuses</option>
 					<option value="active">Active</option>
 					<option value="inactive">Inactive</option>
 				</Select>
 			</FormField>
-			<FormField id="filter-currency" label="Currency">
-				<Select
+			<fieldset className="col-span-2 m-0 grid grid-cols-2 gap-x-3 gap-y-2 border-0 p-0 sm:col-span-4 sm:grid-cols-[repeat(3,minmax(0,12rem))] lg:col-span-8 xl:col-span-1 xl:grid-cols-2">
+				<legend className="mb-1 p-0 text-sm font-semibold">Salary range</legend>
+				<FormField
 					id="filter-currency"
-					value={search.currencyCode ?? ""}
-					onChange={(event) => {
-						const currencyCode = event.target.value || undefined;
-						onChange(
-							currencyCode
-								? { currencyCode }
-								: {
-										currencyCode,
-										salaryMin: undefined,
-										salaryMax: undefined,
-									},
-						);
-					}}
+					label={<span className="sr-only">Currency</span>}
+					className="col-span-2 sm:col-span-1 xl:col-span-2"
 				>
-					<option value="">All currencies</option>
-					{reference.currencies.map((currency) => (
-						<option key={currency.code} value={currency.code}>
-							{currency.code}
-						</option>
-					))}
-				</Select>
-			</FormField>
-			<fieldset className="col-span-2 m-0 grid grid-cols-2 gap-3 border-0 p-0 sm:col-span-4 lg:col-span-2">
-				<legend className="sr-only">Annual salary range</legend>
-				<FormField id="filter-salary-min" label="Salary from">
+					<Select
+						id="filter-currency"
+						value={search.currencyCode ?? ""}
+						onChange={(event) => {
+							const currencyCode = event.target.value || undefined;
+							onChange(
+								currencyCode
+									? { currencyCode }
+									: {
+											currencyCode,
+											salaryMin: undefined,
+											salaryMax: undefined,
+										},
+							);
+						}}
+					>
+						<option value="">All currencies</option>
+						{reference.currencies.map((currency) => (
+							<option key={currency.code} value={currency.code}>
+								{currency.code}
+							</option>
+						))}
+					</Select>
+				</FormField>
+				<FormField
+					id="filter-salary-min"
+					label={<span className="sr-only">Salary from</span>}
+				>
 					<Input
 						id="filter-salary-min"
+						placeholder="Min"
 						inputMode="decimal"
 						disabled={!search.currencyCode}
 						defaultValue={search.salaryMin}
@@ -143,9 +155,13 @@ export function DirectoryFilters({
 						}
 					/>
 				</FormField>
-				<FormField id="filter-salary-max" label="Salary to">
+				<FormField
+					id="filter-salary-max"
+					label={<span className="sr-only">Salary to</span>}
+				>
 					<Input
 						id="filter-salary-max"
+						placeholder="Max"
 						inputMode="decimal"
 						disabled={!search.currencyCode}
 						defaultValue={search.salaryMax}
@@ -160,8 +176,8 @@ export function DirectoryFilters({
 					id="filter-salary-help"
 					className={
 						minInvalid || maxInvalid
-							? "col-span-2 m-0 text-xs text-destructive"
-							: "col-span-2 m-0 text-xs text-muted-foreground"
+							? "col-span-2 m-0 text-xs sm:col-span-3 xl:col-span-2 text-destructive"
+							: "col-span-2 m-0 text-xs sm:col-span-3 xl:col-span-2 text-muted-foreground"
 					}
 				>
 					{salaryRangeHelp}

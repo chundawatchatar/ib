@@ -24,7 +24,7 @@ export function EmployeeDetails({ employee, reference }: EmployeeDetailsProps) {
 		<div className="flex flex-col gap-6">
 			<header className="flex flex-col gap-1">
 				<div className="flex items-center gap-3">
-					<h1 className="m-0 text-2xl font-semibold">{employee.name}</h1>
+					<h1 className="m-0 text-xl font-semibold">{employee.name}</h1>
 					{!employee.active && <Badge variant="secondary">Inactive</Badge>}
 				</div>
 				<p className="m-0 text-sm text-muted-foreground">

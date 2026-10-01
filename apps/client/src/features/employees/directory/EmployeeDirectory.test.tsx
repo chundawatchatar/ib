@@ -129,9 +129,9 @@ describe("employee directory", () => {
 		);
 
 		expect(
-			await screen.findByText(/No employees match these filters/),
+			await screen.findByText("No employees match “nobody”"),
 		).toBeVisible();
-		fireEvent.click(screen.getByRole("button", { name: "Clear filters" }));
+		fireEvent.click(screen.getByRole("button", { name: "Clear all filters" }));
 
 		await screen.findByRole("row", { name: /Ada Lovelace/ });
 		expect(screen.getByLabelText("Search")).toHaveValue("");

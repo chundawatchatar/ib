@@ -16,7 +16,7 @@ function NewEmployeePage() {
 			<Link to="/employees" className="self-start text-sm">
 				All employees
 			</Link>
-			<h1 className="m-0 text-2xl font-semibold">New employee</h1>
+			<h1 className="m-0 text-xl font-semibold">New employee</h1>
 			<CreateEmployeeForm reference={reference} />
 		</main>
 	);
