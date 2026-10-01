@@ -1,47 +1,19 @@
-@layer salary-manager-ui {
-	.ui-button,
-	.ui-input {
-		box-sizing: border-box;
-		font: inherit;
-		border: 1px solid var(--ui-border, #cbd5e1);
-		border-radius: var(--ui-radius, 0.5rem);
-	}
+/*
+ * Tailwind v4 theme for @salary-manager/ui. Import after `@import "tailwindcss"`.
+ * Components use these tokens as utilities (bg-primary, text-muted-foreground…);
+ * apps theme them by setting the --ui-* variables, including for dark mode.
+ */
+@source "./";
 
-	.ui-button {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.625rem 1rem;
-		font-weight: 600;
-		cursor: pointer;
-	}
-
-	.ui-button--primary {
-		background: var(--ui-primary, #173a40);
-		color: var(--ui-on-primary, #fff);
-	}
-
-	.ui-button--secondary,
-	.ui-input {
-		background: var(--ui-surface, #fff);
-		color: var(--ui-text, #173a40);
-	}
-
-	.ui-input {
-		width: 100%;
-		padding: 0.625rem 0.75rem;
-	}
-
-	.ui-button:focus-visible,
-	.ui-input:focus-visible {
-		outline: 2px solid var(--ui-focus, #328f97);
-		outline-offset: 2px;
-	}
-
-	.ui-button:disabled,
-	.ui-input:disabled {
-		cursor: not-allowed;
-		opacity: 0.55;
-	}
+@theme inline {
+	--color-primary: var(--ui-primary, #173a40);
+	--color-primary-foreground: var(--ui-on-primary, #fff);
+	--color-surface: var(--ui-surface, #fff);
+	--color-foreground: var(--ui-text, #173a40);
+	--color-muted-foreground: var(--ui-muted, #64748b);
+	--color-border: var(--ui-border, #cbd5e1);
+	--color-ring: var(--ui-focus, #328f97);
+	--color-destructive: var(--ui-danger, #b42318);
+	--color-destructive-foreground: var(--ui-on-danger, #fff);
+	--radius-ui: var(--ui-radius, 0.5rem);
 }

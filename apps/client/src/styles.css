@@ -14,6 +14,7 @@
 	--ui-text: var(--sea-ink);
 	--ui-border: var(--line);
 	--ui-focus: var(--lagoon-deep);
+	--ui-muted: var(--sea-ink-soft);
 	--sea-ink: #173a40;
 	--sea-ink-soft: #416166;
 	--lagoon: #4fb8b2;
