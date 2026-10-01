@@ -8,15 +8,24 @@ import {
 	employees,
 	fxRates,
 } from "@salary-manager/domain";
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, isNull, ne, sql } from "drizzle-orm";
 import { employeeWhere } from "../employees/employee-filters";
 
 type Reader = Pick<Database, "select" | "selectDistinct" | "execute">;
+// USD converts to USD at exactly 1 by definition, so it never needs a stored
+// rate: USD→USD rows neither choose the rate date nor count as missing.
+const REPORTING_CURRENCY = "USD";
+
 export async function latestRateDate(db: Reader) {
 	const [row] = await db
 		.select({ date: sql<string | null>`max(${fxRates.rateDate})::text` })
 		.from(fxRates)
-		.where(eq(fxRates.targetCurrencyCode, "USD"));
+		.where(
+			and(
+				eq(fxRates.targetCurrencyCode, REPORTING_CURRENCY),
+				ne(fxRates.sourceCurrencyCode, REPORTING_CURRENCY),
+			),
+		);
 	return row?.date ?? null;
 }
 export async function missingRates(
@@ -31,11 +40,17 @@ export async function missingRates(
 			fxRates,
 			and(
 				eq(fxRates.sourceCurrencyCode, employees.currencyCode),
-				eq(fxRates.targetCurrencyCode, "USD"),
+				eq(fxRates.targetCurrencyCode, REPORTING_CURRENCY),
 				date ? eq(fxRates.rateDate, date) : sql`false`,
 			),
 		)
-		.where(and(employeeWhere(query), isNull(fxRates.rate)));
+		.where(
+			and(
+				employeeWhere(query),
+				ne(employees.currencyCode, REPORTING_CURRENCY),
+				isNull(fxRates.rate),
+			),
+		);
 	return rows.map((row) => row.code).sort();
 }
 export async function summarize(
@@ -47,13 +62,15 @@ export async function summarize(
 	const population = usd
 		? sql`
  select 'USD'::text as code, 2 as precision,
- ${employees.salaryMinorUnits}::numeric * ${fxRates.rate} *
+ ${employees.salaryMinorUnits}::numeric *
+ (case when ${employees.currencyCode} = ${REPORTING_CURRENCY} then 1::numeric else ${fxRates.rate} end) *
  (case ${currencies.minorUnits} when 0 then 100::numeric when 1 then 10::numeric
  when 2 then 1::numeric when 3 then 0.1::numeric when 4 then 0.01::numeric
  when 5 then 0.001::numeric when 6 then 0.0001::numeric end) as amount
  from ${employees} inner join ${currencies} on ${currencies.code} = ${employees.currencyCode}
- inner join ${fxRates} on ${fxRates.sourceCurrencyCode} = ${employees.currencyCode}
- and ${fxRates.targetCurrencyCode} = 'USD' and ${fxRates.rateDate} = ${date}
+ left join ${fxRates} on ${fxRates.sourceCurrencyCode} = ${employees.currencyCode}
+ and ${fxRates.sourceCurrencyCode} <> ${REPORTING_CURRENCY}
+ and ${fxRates.targetCurrencyCode} = ${REPORTING_CURRENCY} and ${fxRates.rateDate} = ${date}
  where ${employeeWhere(query) ?? sql`true`}`
 		: sql`
  select ${employees.currencyCode} as code, ${currencies.minorUnits} as precision, ${employees.salaryMinorUnits}::numeric as amount

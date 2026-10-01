@@ -266,7 +266,7 @@ describe("pay summaries against PostgreSQL", () => {
 			total: "3",
 		});
 	});
-	it("requires rates only for populated currencies at the latest date", async () => {
+	it("requires rates only for populated non-USD currencies at the latest date", async () => {
 		await insert(100, "USD");
 		await database.connection.db
 			.delete(fxRates)
@@ -284,6 +284,7 @@ describe("pay summaries against PostgreSQL", () => {
 		expect((await report({ view: "usd", currencyCode: "USD" })).headcount).toBe(
 			1,
 		);
+		// A newer USD→USD row is irrelevant: it must not move the rate date.
 		await database.connection.db.insert(fxRates).values({
 			sourceCurrencyCode: "USD",
 			targetCurrencyCode: "USD",
@@ -291,13 +292,32 @@ describe("pay summaries against PostgreSQL", () => {
 			rate: "1",
 		});
 		expect((await report({ view: "usd", currencyCode: "USD" })).rateDate).toBe(
-			"2026-02-01",
+			"2026-01-01",
 		);
 		expect(
 			(await fetch(`${url}${contract.getPayInsightsSummary.path}?view=usd`))
 				.status,
 		).toBe(422);
 	});
+	// Regression: USD salaries depended on a stored USD→USD rate of 1.
+	it("converts USD at exactly 1 without a stored USD→USD rate", async () => {
+		await insert(10000, "USD");
+		await insert(20000, "EUR");
+		await database.connection.db
+			.delete(fxRates)
+			.where(eq(fxRates.sourceCurrencyCode, "USD"));
+		expect(await report({ view: "usd" })).toMatchObject({
+			rateDate: "2026-01-01",
+			headcount: 2,
+			summaries: [{ currencyCode: "USD", total: "32000" }],
+		});
+		await database.connection.db.delete(fxRates);
+		expect(await report({ view: "usd", currencyCode: "USD" })).toMatchObject({
+			rateDate: null,
+			summaries: [{ headcount: 1, total: "10000" }],
+		});
+	});
+
 	it("handles an added currency without a nine-summary limit", async () => {
 		// The contract remains valid when master data grows; an unused missing rate is harmless.
 		const { currencies } = await import("@salary-manager/domain");

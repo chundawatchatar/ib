@@ -155,7 +155,9 @@ a conflict. Clients must reload after 409 and send the new version for a new sav
 
 **Decision:** Insights reuse directory population filters but default to active
 employees. Local reports separate currencies; USD reports use the latest installed
-USD rate date and require rates only for currencies in the filtered population.
+USD rate date and require rates only for non-USD currencies in the filtered
+population. USD converts at exactly 1 without a stored rate, so USD→USD rows never
+choose the rate date or cause a missing-rate error.
 Missing required rates return 422 because repairing master data is necessary;
 retrying cannot fix the report. Rates never fall back to an earlier date.
 
