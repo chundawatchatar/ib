@@ -6,9 +6,13 @@ Read [docs/requirements.md](docs/requirements.md) before implementing features.
 Use it as the source of truth for product scope and acceptance criteria.
 Clarify ambiguities before coding, and update it when agreed requirements change.
 
+Check [docs/plan.md](docs/plan.md) for current priorities. Work on items in order,
+tick an item in the commit that completes it, and add new work there rather than
+in code TODO comments.
+
 ## Local Agent Skills
 
-Read the [local skill index](.agents/skills/README.md) and the relevant skill before changing API endpoints, shared contracts/types, database schema/migrations/seed data, or backend/frontend tests.
+Read the [local skill index](.agents/skills/README.md) and the relevant skill before changing API endpoints, shared contracts/types, database schema/migrations/seed data, client or UI components, or backend/frontend tests.
 
 ## Project Structure & Module Organization
 
