@@ -7,8 +7,9 @@
 		"build": "tsc --noEmit && esbuild src/index.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/index.cjs --sourcemap",
 		"start": "node --env-file-if-exists=../../.env --enable-source-maps dist/index.cjs",
 		"typecheck": "tsc --noEmit",
-		"test": "vitest run",
-		"test:watch": "vitest"
+		"test": "vitest run --exclude '**/*.integration.test.ts'",
+		"test:watch": "vitest --exclude '**/*.integration.test.ts'",
+		"test:db": "vitest run integration.test"
 	},
 	"keywords": [],
 	"author": "",
@@ -17,6 +18,7 @@
 		"@salary-manager/contracts": "workspace:*",
 		"@ts-rest/express": "3.52.1",
 		"express": "^4.21.2",
+		"drizzle-orm": "^0.45.1",
 		"@salary-manager/domain": "workspace:*"
 	},
 	"devDependencies": {

@@ -5,6 +5,7 @@ import { RequestValidationError } from "@ts-rest/express";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "./app.js";
 import type { HealthService } from "./modules/health/health.service.js";
+import { createTestServices } from "./test-services.js";
 
 describe("application middleware and controller boundaries", () => {
 	let server: Server;
@@ -15,10 +16,10 @@ describe("application middleware and controller boundaries", () => {
 	beforeEach(async () => {
 		vi.resetAllMocks();
 		getHealth.mockReturnValue({ status: "ok" });
-		server = createApp({ services: { health: { getHealth } }, logger }).listen(
-			0,
-			"127.0.0.1",
-		);
+		server = createApp({
+			services: { ...createTestServices(), health: { getHealth } },
+			logger,
+		}).listen(0, "127.0.0.1");
 		await once(server, "listening");
 		const address = server.address();
 		if (!address || typeof address === "string")

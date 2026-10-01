@@ -37,7 +37,7 @@ Keep ordinary unit fixtures small. Test full seed correctness separately when re
 ## In this repository
 
 - Pure unit tests (`*.test.ts`) must not need PostgreSQL; `pnpm --filter <package> run test` excludes `*.integration.test.ts`.
-- Real database tests go in `*.integration.test.ts` and run with `pnpm test:db`, which needs `TEST_DATABASE_URL` (see `.env.example`). Each test creates a uniquely named database, applies the real migrations, and drops it in teardown. Never reset or clear the development database from tests.
+- Real database tests go in `*.integration.test.ts` and run with `pnpm test:db`, which needs `TEST_DATABASE_URL` (see `.env.example`). Outside the domain package, create that database with `createTestDatabase()` from `@salary-manager/domain/testing` (unique name, real migrations) and call its `drop()` in teardown. Never import another package's `src/` files by relative path, and never reset or clear the development database from tests.
 - Refer to reference data by name or code in tests, and read generated IDs back from the database; do not hard-code master-data UUIDs.
 - For generated seed data, assert properties (counts, uniqueness, ranges, ordering, determinism for a fixed seed) rather than exact rows.
 

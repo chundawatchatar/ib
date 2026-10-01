@@ -7,7 +7,6 @@ completes it and move it to Done; `git log` records which commit that was.
 
 ## Next
 
-- [ ] Employee directory API: server pagination, name/code search, filters (country, department, level, currency, salary range), stable sorting, total count
 - [ ] Employee create/view/edit/deactivate API with server-side validation
 - [ ] Salary edit API: optimistic version check, audit row in the same transaction, conflict response for stale edits
 - [ ] Pay insights: headcount, total, average, median, min, max, P25/P75 for the full filtered population; tested against the requirements acceptance numbers
@@ -42,3 +41,4 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] Declare Node.js `>=22.9` in the root `engines` field
 - [x] Generate client routes through the Start Vite plugin in `typecheck` and `build`, so `pnpm check` works after route changes
 - [x] API foundation: app factory, feature controllers/services, request context and logging, centralized errors with field-level validation issues
+- [x] Employee directory API: server pagination, name/code search, filters (country, department, level, currency, salary range), stable sorting, total count

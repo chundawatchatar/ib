@@ -3,13 +3,17 @@ import type { Server } from "node:http";
 import { contract } from "@salary-manager/contracts";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createApp } from "./app.js";
+import { createTestServices } from "./test-services.js";
 
 describe("HTTP API", () => {
 	let server: Server;
 	let baseUrl: string;
 
 	beforeAll(async () => {
-		server = createApp().listen(0, "127.0.0.1");
+		server = createApp({ services: createTestServices() }).listen(
+			0,
+			"127.0.0.1",
+		);
 		await once(server, "listening");
 		const address = server.address();
 		if (address === null || typeof address === "string") {

@@ -4,7 +4,7 @@ Read the skill relevant to your task alongside [AGENTS.md](../../AGENTS.md) and 
 
 | Skill | Read when |
 | --- | --- |
-| [API endpoints](api-endpoints/SKILL.md) | Adding or changing HTTP endpoints, shared contracts, route constants, or shared types. Includes Zod-inferred request/response types and common package dependency rules. |
+| [API endpoints](api-endpoints/SKILL.md) | Adding or changing HTTP endpoints end to end: contract and Zod schemas, route constants, the feature module (controller, service, queries), wiring, errors, tests, and docs. |
 | [Database schema](database-schema/SKILL.md) | Changing tables, constraints, migrations, reference (master) data, or the employee seed in `packages/domain`. Includes key, money, and migration rules. |
 | [Backend tests](backend-tests/SKILL.md) | Writing domain, database, HTTP, or API contract regression tests. |
 | [Frontend development](frontend-development/SKILL.md) | Any change in `apps/client` or `packages/ui`: shadcn/Tailwind components, ts-rest + TanStack Query (queryOptions factories, mutation hooks), React Hook Form forms, search, loading states, and React patterns. |

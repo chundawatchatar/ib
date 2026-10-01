@@ -2,6 +2,7 @@ import { once } from "node:events";
 import type { Server } from "node:http";
 import { createDatabase, requireDatabaseUrl } from "@salary-manager/domain";
 import { createApp } from "./app.js";
+import { createServices } from "./services.js";
 
 export async function startApi(
 	databaseUrl = process.env.DATABASE_URL,
@@ -11,7 +12,9 @@ export async function startApi(
 	let server: Server | undefined;
 	try {
 		await connection.checkConnection();
-		server = createApp().listen(port);
+		server = createApp({ services: createServices(connection.db) }).listen(
+			port,
+		);
 		await once(server, "listening");
 	} catch {
 		if (server?.listening) server.close();

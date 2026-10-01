@@ -29,6 +29,9 @@ importers:
       '@ts-rest/express':
         specifier: 3.52.1
         version: 3.52.1(@ts-rest/core@3.52.1(@types/node@26.6.3)(zod@3.25.76))(express@4.22.3)(zod@3.25.76)
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.3(@types/pg@8.23.1)(pg@8.23.0)
       express:
         specifier: ^4.21.2
         version: 4.22.3

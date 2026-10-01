@@ -5,17 +5,17 @@ import { consoleLogger, type Logger } from "./logger.js";
 import { errorHandler, notFound } from "./middleware/errors.js";
 import { requestContext } from "./middleware/request-context.js";
 import { createRouter } from "./router.js";
-import { createServices, type Services } from "./services.js";
+import type { Services } from "./services.js";
 
 type AppDependencies = {
-	services?: Services;
+	services: Services;
 	logger?: Logger;
 };
 
 export function createApp({
-	services = createServices(),
+	services,
 	logger = consoleLogger,
-}: AppDependencies = {}): Express {
+}: AppDependencies): Express {
 	const app = express();
 	app.disable("x-powered-by");
 	app.use(requestContext(logger));

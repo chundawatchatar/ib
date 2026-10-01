@@ -1,47 +1,77 @@
 ---
 name: api-endpoints
-description: "Implement or change HTTP API endpoints, shared contracts, route constants, and shared types using the repository's runtime validation and persistence conventions. Use for endpoint implementation or shared API/type changes."
+description: "Implement or change HTTP API endpoints end to end: shared ts-rest contract and Zod schemas, route constants, the feature module (controller, service, queries) in apps/api, service wiring, error responses, tests, and docs. Use for any endpoint or shared API/type change."
 ---
 
 # API Endpoints
 
-Use this guide when adding or changing HTTP endpoints. It is plain Markdown for any coding agent; repository instructions, requirements, installed tooling, and the user's current request determine the implementation.
+Follow this for every new or changed endpoint. The employee directory (`GET /api/employees`) is the reference implementation: read `packages/contracts/src/employees.ts` and `apps/api/src/modules/employees/` before starting. Read [database-schema](../database-schema/SKILL.md) if tables change and [backend-tests](../backend-tests/SKILL.md) for test rules.
 
-## Establish the behavior
+## Before coding
 
-Read the repository instructions and relevant requirements, then inspect existing contracts, routing, application startup, services, persistence, and adjacent tests. Reuse the chosen framework and conventions. Clarify missing behavior that changes correctness; do not expand product scope or introduce a new framework to follow this guide.
+Read the requirement and acceptance criteria in `docs/requirements.md` and the item in `docs/plan.md`. Decide the inputs, the success response, the expected failures (404, 409, …), side effects, and whether the endpoint reads or writes. Clarify anything that changes correctness; do not widen scope.
 
-Identify accepted input, successful output, relevant error responses, side effects, and compatibility implications before implementation. Prefer existing validation and error policies; document intentional changes to the public interface.
+## 1. Contract (`packages/contracts`, `packages/common`)
 
-## Shared contracts, routes, and types
+- Add the path to `ROUTE` in `packages/common/src/routes.ts`. Never repeat path strings elsewhere.
+- Keep `packages/common` independent: it must not import, re-export, or depend on contracts, apps, or any other workspace package (type-only imports included). Types and Zod schemas shared across projects that are not API-specific go in common; contracts and apps may depend on it.
+- Put the feature's Zod schemas and inferred types in `packages/contracts/src/<feature>.ts` (query, params, body, response), and export them from `index.ts`. Never hand-write request or response types.
+- Add the route to `contract` in `index.ts`, named `<verb><Resource>` (`listEmployees`, `getEmployee`, `updateEmployeeSalary`).
+- `400`, `413`, `415`, and `500` are shared `commonResponses` with `{ message, issues? }`. Declare each endpoint's expected domain errors (such as `404` or a stale-edit `409`) on the route using `apiErrorSchema`.
+- Query parameters:
+  - Build them from the shared helpers in `src/query.ts`: `paginationQuery` (page size capped at 100), `integerQuery(min, max)`, and `textQuery(max)` (trimmed, no control characters).
+  - Use `.strict()` so unknown keys return 400. Sort fields are an explicit enum, never a raw column name.
+  - Put cross-field rules in `.superRefine` with a `path`, so the error names the field.
+- Response schemas are bounded (`max` on arrays) and expose contract shapes, never database rows.
+- Money is integer minor units plus an explicit currency code (and its `minorUnits` when the client must format it).
 
-Use ts-rest for end-to-end API type safety, with clients and servers consuming the shared contracts.
+## 2. Feature module (`apps/api/src/modules/<feature>/`)
 
-- Define API contracts and endpoint Zod schemas in `packages/contracts`. Export named request and response types using `z.infer<typeof schema>` from the same schemas referenced by the ts-rest contract. Include query, path parameter, request body, and response body types where applicable; do not duplicate schema shapes as handwritten interfaces.
-- Define route path constants in `packages/common` and use them in contracts. Export them through the common package's public entry point; do not repeat route strings in clients or handlers.
-- Keep global/shared types used across projects in `packages/common` and export them through its public entry point. When these types need runtime validation, define their Zod schemas in common and infer the types there so contracts can reuse the schemas.
-- Keep common independent of every other local workspace package: no imports, re-exports, or dependencies on contracts, applications, or sibling packages, including type-only and cross-project relative imports. Its own files and external dependencies are allowed. Contracts and applications may depend on common.
+| File | Owns |
+| --- | --- |
+| `<feature>.controller.ts` | Maps the validated request to a service call and returns `{ status, body }`. Typed with `AppRouteImplementation<typeof contract.<route>>`. No business rules and no queries. Returns declared domain errors (`404`, `409`); lets unexpected errors propagate. |
+| `<feature>.service.ts` | Business rules and transaction boundaries. `create<Feature>Service(db)` returns an object; export its type. Several reads that must agree use one read-only `repeatable read` transaction. Writes check `version`, update, and write audit rows in one transaction. |
+| `<feature>.queries.ts` | Parameterized Drizzle queries over `@salary-manager/domain` tables. Accept `Pick<Database, "select">` or a transaction so the service controls it. Map rows to the contract shape. |
 
-For example, export aliases alongside their endpoint schemas in contracts, or alongside shared schemas in common:
+- One controller, service, and queries file per **feature**, not per endpoint; the feature's endpoints share loading, version checks, and row mapping there. When the service passes about 300 lines, or one operation has substantial logic of its own (for example the salary update), move that operation into its own file in the module (`update-salary.ts`) and call it from the service. The service object stays the only surface used by the controller and `services.ts`.
+- Filtering, sorting, pagination, counts, and aggregates run in SQL over the full matching population, never in JavaScript on one page.
+- Sorting always adds `id` as a final tiebreaker so pages are stable.
+- Treat search as literal text: escape `%`, `_`, and `\` before `ilike`.
+- Never build SQL from strings; use Drizzle operators or `sql` with bound values.
+- No generic repositories or base controllers.
 
-```ts
-export type CreateEmployeeRequest = z.infer<typeof createEmployeeRequestSchema>;
-export type EmployeeResponse = z.infer<typeof employeeResponseSchema>;
-```
+## 3. Wiring
 
-## Implement the boundary
+- `src/services.ts`: add the service to `createServices(db)`.
+- `src/router.ts`: register the controller under the contract route name.
+- `src/test-services.ts`: add a harmless default implementation so HTTP tests for other features keep compiling.
+- `createApp({ services })` requires services; `start.ts` builds them from the real database connection. Do not add middleware or change startup for a single endpoint.
 
-- Update the shared schemas, exported inferred types, and contract before the handler. Use those shared definitions in clients and servers.
-- Validate external input at runtime. Narrow unknown values, bound query sizes, allowlist dynamic sort/group fields, and parameterize database values.
-- Keep `@salary-manager/domain` (Drizzle tables and inferred row types) server-only. Map database rows into the contract's response schemas; never expose row types through contracts or common. Read the database-schema skill before changing tables.
-- Keep handlers focused on request orchestration. Keep domain/query logic in its owning backend project; separate concerns where behavior or testability warrants it, without adding a generic architecture by default.
-- Ensure middleware and handlers emit the documented status/body shapes for validation and domain failures. Preserve configured response validation. Avoid exposing internal errors or secrets in responses.
-- For state changes, preserve the required transaction, concurrency, and audit invariants. Invalid or stale requests must not produce partial writes. Retry or idempotency behavior should follow the actual API requirements.
-- Keep listing responses bounded and sorting stable. Counts and aggregates must describe the agreed population rather than only the visible page. Preserve units and grouping semantics for amounts or other measured values.
-- Keep listener startup separate from importable application logic. Use testable dependencies for stateful operations when needed; avoid unrelated startup refactors.
+## 4. Errors and safety
 
-## Verify the change
+- Request validation and JSON parsing errors are handled centrally: 400 with field `issues`, 413, or 415. Do not re-validate in controllers.
+- Expected outcomes (not found, stale version) are explicit contract responses, not thrown errors.
+- Never put raw database errors, SQL, or stack traces in responses. Unexpected errors become a generic 500 and are logged by the error handler.
+- Response validation stays on: a response that breaks the contract is a 500, which surfaces bugs early.
 
-Add meaningful success and relevant failure-path coverage. Validate actual HTTP responses against the contract, and use real persistence tests for claims about transactions or constraints. A mocked service return does not prove the middleware, database, or response boundary works.
+## 5. Tests
 
-Run the affected project tests/typechecks and repository lint/format checks using its pinned toolchain. Build when package imports, bundling, or startup are affected. Report behavior changed, compatibility considerations, executed checks, and any blocked verification accurately. Do not silently skip a test because its environment needs a local listening socket.
+- `<feature>.test.ts` (fast, no database): start `createApp({ services: { ...createTestServices(), <feature>: { method: vi.fn() } } })` on an ephemeral loopback port. Cover:
+  - defaults and parsed values reaching the service
+  - every invalid input returning 400 with `issues` and the service **not** called
+  - declared domain errors
+  - responses parsed with the contract schema
+- `<feature>.integration.test.ts` (real PostgreSQL, run by `pnpm test:db`): use `createTestDatabase()` from `@salary-manager/domain/testing` in `beforeEach` and `drop()` in `afterEach`, then call the API through `startApi(databaseUrl, 0)`. Cover:
+  - combined filters and correct totals
+  - stable paging in both sort directions
+  - transactions and rollback, stale-version conflicts, and audit rows for writes
+  - one run against the full 10,000-employee seed for list endpoints
+- Never import another package's `src/` files by relative path; use its public or `/testing` entry points.
+- Use the requirements' worked examples as expected values for calculations.
+
+## 6. Finish
+
+- Document the endpoint in `apps/api/README.md`: method, path, parameters table, response shape, and errors.
+- Record any real trade-off in `docs/decisions.md`. Move the item to Done in `docs/plan.md`.
+- For list or search endpoints, measure response time over the seeded data and record it before claiming the performance target.
+- Run `pnpm check` and `pnpm test:db`, and report what each proved.
