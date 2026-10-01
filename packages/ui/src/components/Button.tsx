@@ -19,13 +19,13 @@ export const buttonVariants = cva(
 				destructive: "border-border bg-destructive text-destructive-foreground",
 			},
 			size: {
-				default: "px-4 py-2.5",
-				sm: "px-2.5 py-1.5 text-sm",
-				lg: "px-6 py-3.5",
-				icon: "size-11 p-0",
+				sm: "h-8 px-3 text-sm",
+				md: "h-10 px-4",
+				lg: "h-12 px-6 text-lg",
+				icon: "size-8 p-0",
 			},
 		},
-		defaultVariants: { variant: "primary", size: "default" },
+		defaultVariants: { variant: "primary", size: "md" },
 	},
 );
 export type ButtonProps = ComponentProps<"button"> &

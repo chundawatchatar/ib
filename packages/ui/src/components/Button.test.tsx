@@ -41,3 +41,24 @@ describe("Button", () => {
 		expect(onClick).not.toHaveBeenCalled();
 	});
 });
+
+describe("Button sizes", () => {
+	it.each([
+		["sm", "h-8"],
+		["md", "h-10"],
+		["lg", "h-12"],
+	] as const)("applies the %s size", (size, height) => {
+		render(<Button size={size}>Sized</Button>);
+		expect(screen.getByRole("button", { name: "Sized" }).className).toContain(
+			height,
+		);
+		cleanup();
+	});
+
+	it("defaults to the medium size", () => {
+		render(<Button>Default</Button>);
+		expect(screen.getByRole("button", { name: "Default" }).className).toContain(
+			"h-10",
+		);
+	});
+});

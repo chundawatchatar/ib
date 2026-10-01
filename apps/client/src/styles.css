@@ -50,7 +50,10 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
-a {
-	color: var(--ui-primary);
-	text-underline-offset: 2px;
+/* Layered so component utilities (such as a Button rendered as a link) win. */
+@layer base {
+	a {
+		color: var(--ui-primary);
+		text-underline-offset: 2px;
+	}
 }

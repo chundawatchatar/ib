@@ -14,6 +14,7 @@ import { type ReactNode, useState } from "react";
 import { cn } from "../lib/utils";
 import { Alert } from "./Alert";
 import { Button } from "./Button";
+import { Icon } from "./Icon";
 import { Skeleton } from "./Skeleton";
 import {
 	Table,
@@ -115,7 +116,7 @@ export function DataGrid<TData, TValue = unknown>({
 				>
 					{error}
 					{onRetry && (
-						<Button variant="secondary" onClick={onRetry}>
+						<Button variant="secondary" size="sm" onClick={onRetry}>
 							Retry
 						</Button>
 					)}
@@ -157,13 +158,21 @@ export function DataGrid<TData, TValue = unknown>({
 													header.column.columnDef.header,
 													header.getContext(),
 												)}
-												<span aria-hidden="true">
-													{header.column.getIsSorted() === "asc"
-														? " ↑"
-														: header.column.getIsSorted() === "desc"
-															? " ↓"
-															: " ↕"}
-												</span>
+												<Icon
+													size="sm"
+													name={
+														header.column.getIsSorted() === "asc"
+															? "arrow-up"
+															: header.column.getIsSorted() === "desc"
+																? "arrow-down"
+																: "arrow-up-down"
+													}
+													className={
+														header.column.getIsSorted()
+															? undefined
+															: "text-muted-foreground"
+													}
+												/>
 											</Button>
 										) : (
 											flexRender(
@@ -213,23 +222,27 @@ export function DataGrid<TData, TValue = unknown>({
 				</Table>
 			</div>
 			<div className="flex flex-wrap items-center justify-end gap-3">
-				<span role="status" className="mr-auto">
+				<span role="status" className="mr-auto text-sm">
 					{table.getRowCount().toLocaleString()} results · Page{" "}
 					{pageCount === 0 ? 0 : currentPage.pageIndex + 1} of {pageCount}
 				</span>
 				<Button
 					variant="secondary"
+					size="sm"
 					disabled={isLoading || !table.getCanPreviousPage()}
 					onClick={() => table.previousPage()}
 				>
+					<Icon name="chevron-left" size="sm" />
 					Previous
 				</Button>
 				<Button
 					variant="secondary"
+					size="sm"
 					disabled={isLoading || !table.getCanNextPage()}
 					onClick={() => table.nextPage()}
 				>
 					Next
+					<Icon name="chevron-right" size="sm" />
 				</Button>
 			</div>
 		</section>
