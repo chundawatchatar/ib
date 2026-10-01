@@ -64,7 +64,7 @@ export function InsightsFilters({
 					))}
 				</Select>
 			</FormField>
-			<FormField id="insights-status" label="Employees">
+			<FormField id="insights-status" label="Status">
 				<Select
 					id="insights-status"
 					value={search.status ?? "active"}

@@ -1,4 +1,12 @@
-import { Button, SegmentedControl, Select } from "@salary-manager/ui";
+import {
+	Button,
+	Card,
+	CardContent,
+	EmptyState,
+	Icons,
+	SegmentedControl,
+	Select,
+} from "@salary-manager/ui";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { referenceDataQuery } from "#/features/reference-data/api";
@@ -41,14 +49,45 @@ export function Insights() {
 			replace: true,
 		});
 	const empty = summary.data?.headcount === 0;
-	const emptyMessage = hasFilters(search)
-		? "No employees match these filters."
-		: "No active employees to report on.";
+	const clearFilters = () =>
+		navigate({
+			search: (previous) => ({
+				view: previous.view,
+				groupBy: previous.groupBy,
+			}),
+		});
+	const emptyTitle = hasFilters(search)
+		? "No employees match these filters"
+		: "No active employees to report on";
+	// Only the summary shows the full empty state with the way out; the
+	// sections below repeat the reason in one line instead of three blocks.
+	const emptySummary = hasFilters(search) ? (
+		<EmptyState
+			icon={Icons.SearchX}
+			title={emptyTitle}
+			description="Try fewer filters to include more people."
+			action={
+				<Button variant="secondary" size="sm" onClick={clearFilters}>
+					Clear all filters
+				</Button>
+			}
+		/>
+	) : (
+		<EmptyState icon={Icons.Users} title={emptyTitle} />
+	);
+	const emptySection = (
+		<p className="m-0 text-sm text-muted-foreground">{emptyTitle}.</p>
+	);
 
 	return (
 		<div className="flex flex-col gap-4">
-			<div className="flex flex-wrap items-center justify-between gap-3">
-				<h1 className="m-0 text-xl font-semibold">Pay insights</h1>
+			<div className="flex flex-wrap items-start justify-between gap-3">
+				<div className="flex flex-col gap-1">
+					<h1 className="m-0 text-xl font-semibold">Pay insights</h1>
+					<p className="m-0 text-sm text-muted-foreground">
+						{basis(query.view, summary.data?.rateDate)}
+					</p>
+				</div>
 				<SegmentedControl
 					label="Currency basis"
 					name="view"
@@ -59,39 +98,28 @@ export function Insights() {
 					}
 				/>
 			</div>
-			<InsightsFilters
-				search={search}
-				reference={reference}
-				onChange={setSearch}
-			/>
-			<div className="flex flex-wrap items-center justify-between gap-3">
-				<p className="m-0 text-sm text-muted-foreground">
-					{basis(query.view, summary.data?.rateDate)}
-				</p>
-				{hasFilters(search) && (
-					<Button
-						variant="secondary"
-						size="sm"
-						onClick={() =>
-							navigate({
-								search: (previous) => ({
-									view: previous.view,
-									groupBy: previous.groupBy,
-								}),
-							})
-						}
-					>
-						Clear filters
-					</Button>
-				)}
-			</div>
+			<Card>
+				<CardContent className="flex flex-col gap-4">
+					<InsightsFilters
+						search={search}
+						reference={reference}
+						onChange={setSearch}
+					/>
+					{hasFilters(search) && (
+						<Button
+							variant="secondary"
+							size="sm"
+							className="self-start"
+							onClick={clearFilters}
+						>
+							Clear filters
+						</Button>
+					)}
+				</CardContent>
+			</Card>
 			<ReportSection title="Summary" query={summary}>
 				{(report) =>
-					empty ? (
-						<p className="m-0 text-sm">{emptyMessage}</p>
-					) : (
-						<PaySummaryTable report={report} />
-					)
+					empty ? emptySummary : <PaySummaryTable report={report} />
 				}
 			</ReportSection>
 			<ReportSection
@@ -127,7 +155,7 @@ export function Insights() {
 					return distribution && distribution.headcount > 0 ? (
 						<PayDistribution distribution={distribution} />
 					) : (
-						<p className="m-0 text-sm">{emptyMessage}</p>
+						emptySection
 					);
 				}}
 			</ReportSection>
@@ -158,7 +186,7 @@ export function Insights() {
 					report.groups.length ? (
 						<PayGroupsTable report={report} groupLabel={groupLabel} />
 					) : (
-						<p className="m-0 text-sm">{emptyMessage}</p>
+						emptySection
 					)
 				}
 			</ReportSection>
