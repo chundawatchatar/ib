@@ -48,3 +48,11 @@ export function unwrap<
 				`Request failed with status ${response.status}`,
 			);
 }
+
+// A message safe to show users: API validation issues are written for people;
+// anything else (network failures, 5xx) gets the caller's fallback.
+export function errorMessage(error: unknown, fallback: string): string {
+	if (!(error instanceof ApiError) || error.status >= 500) return fallback;
+	const issues = error.issues.map((issue) => issue.message);
+	return issues.length ? issues.join(". ") : error.message;
+}

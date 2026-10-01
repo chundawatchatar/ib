@@ -108,3 +108,30 @@ it("requests server sorting when the consumer handles it", () => {
 	fireEvent.click(screen.getByRole("button", { name: /Name/ }));
 	expect(onSortingChange).toHaveBeenCalledOnce();
 });
+it("right-aligns columns marked as numeric", () => {
+	render(
+		<DataGrid
+			label="Salaries"
+			columns={[
+				{ accessorKey: "name", header: "Name", enableSorting: false },
+				{
+					accessorKey: "salary",
+					header: "Salary",
+					enableSorting: false,
+					meta: { align: "right" },
+				},
+			]}
+			data={[{ name: "Ada", salary: "$100.00" }]}
+		/>,
+	);
+	expect(screen.getByRole("columnheader", { name: "Salary" })).toHaveProperty(
+		"className",
+		expect.stringContaining("text-right"),
+	);
+	expect(screen.getByRole("cell", { name: "$100.00" }).className).toContain(
+		"text-right",
+	);
+	expect(screen.getByRole("cell", { name: "Ada" }).className).not.toContain(
+		"text-right",
+	);
+});

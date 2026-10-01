@@ -20,10 +20,12 @@ The development server runs on port 3000. To target only this app, use `pnpm --f
 ## Source and configuration
 
 - `src/routes/`: file-based routes, including the shared document shell in `__root.tsx`.
-- `src/components/`: React components and their colocated tests.
+- `src/components/`: app shell (header, theme toggle, route pending/error states).
+- `src/features/<feature>/`: `api.ts` query factories and mutation hooks, plus the feature's components and tests.
 - `src/lib/api.ts`: the ts-rest `apiClient` built from the shared contract, `unwrap`, and the `ApiError` it throws.
 - `src/lib/query-client.ts`: TanStack Query defaults (30 s `staleTime`, no retries for 4xx errors or mutations).
-- `src/test/setup.ts`: shared Vitest DOM setup and cleanup.
+- `src/test/setup.ts`: shared Vitest DOM setup, browser API stubs, and cleanup.
+- `src/test/render-app.tsx`: `renderApp(path, handler)` renders the real route tree with a fresh query cache and answers `fetch` from contract-shaped fixtures in `src/test/fixtures.ts`.
 - `src/styles.css`: Tailwind imports and visual styles.
 - `tsconfig.json`: extends the repository's strict TypeScript settings and adds browser/bundler options.
 - `vitest.config.ts`: component tests in jsdom, separate from the Start build plugins.

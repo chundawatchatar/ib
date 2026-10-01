@@ -34,7 +34,7 @@ export function TableHead({ className, ...props }: ComponentProps<"th">) {
 		<th
 			{...props}
 			className={cn(
-				"whitespace-nowrap border-b border-border px-4 py-3 text-left font-semibold",
+				"whitespace-nowrap border-b border-border px-3 py-2 text-left text-sm font-semibold",
 				className,
 			)}
 		/>
@@ -44,7 +44,10 @@ export function TableCell({ className, ...props }: ComponentProps<"td">) {
 	return (
 		<td
 			{...props}
-			className={cn("border-b border-border px-4 py-3 text-left", className)}
+			className={cn(
+				"border-b border-border px-3 py-2 text-left text-sm",
+				className,
+			)}
 		/>
 	);
 }

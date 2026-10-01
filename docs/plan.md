@@ -7,7 +7,6 @@ completes it and move it to Done; `git log` records which commit that was.
 
 ## Next
 
-- [ ] Directory UI with search, filters, and pagination
 - [ ] Employee form and salary edit UI (React Hook Form with contract Zod schemas) with loading, error, and conflict states
 - [ ] Insights UI with a shared string-minor-unit display formatter in `packages/common` (no floating-point conversion)
 - [ ] CI: `pnpm check` and `pnpm test:db` against a PostgreSQL service
@@ -47,3 +46,4 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] Performance check: directory search under 500 ms locally over 10,000 employees (9–16 ms sampled; environment and timings in decisions)
 - [x] Client data layer: TanStack Query provider, ts-rest client, `unwrap` helper, and router-loader integration
 - [x] Reference-data API (countries, currencies, departments, job titles, levels in use) for client filters and forms
+- [x] Directory UI with search, filters, and pagination

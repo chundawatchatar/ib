@@ -48,21 +48,23 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<body>
 				<Header />
 				{children}
-				<TanStackDevtools
-					config={{
-						position: "bottom-right",
-					}}
-					plugins={[
-						{
-							name: "Tanstack Router",
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-						{
-							name: "TanStack Query",
-							render: <ReactQueryDevtoolsPanel />,
-						},
-					]}
-				/>
+				{import.meta.env.MODE !== "test" && (
+					<TanStackDevtools
+						config={{
+							position: "bottom-right",
+						}}
+						plugins={[
+							{
+								name: "Tanstack Router",
+								render: <TanStackRouterDevtoolsPanel />,
+							},
+							{
+								name: "TanStack Query",
+								render: <ReactQueryDevtoolsPanel />,
+							},
+						]}
+					/>
+				)}
 				<Scripts />
 			</body>
 		</html>

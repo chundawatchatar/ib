@@ -6,6 +6,7 @@ import {
 	getSortedRowModel,
 	type OnChangeFn,
 	type PaginationState,
+	type RowData,
 	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
@@ -22,6 +23,17 @@ import {
 	TableHeader,
 	TableRow,
 } from "./Table";
+
+declare module "@tanstack/react-table" {
+	// Type parameters must match the library's declaration.
+	interface ColumnMeta<TData extends RowData, TValue> {
+		/** Right-align numeric columns such as amounts. */
+		align?: "left" | "right";
+	}
+}
+
+const alignClass = (align: "left" | "right" | undefined) =>
+	align === "right" ? "text-right" : undefined;
 
 export type DataGridProps<TData, TValue = unknown> = {
 	columns: ColumnDef<TData, TValue>[];
@@ -123,6 +135,7 @@ export function DataGrid<TData, TValue = unknown>({
 									<TableHead
 										key={header.id}
 										colSpan={header.colSpan}
+										className={alignClass(header.column.columnDef.meta?.align)}
 										aria-sort={
 											header.column.getCanSort()
 												? header.column.getIsSorted() === "asc"
@@ -175,7 +188,10 @@ export function DataGrid<TData, TValue = unknown>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow key={row.id}>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id}>
+										<TableCell
+											key={cell.id}
+											className={alignClass(cell.column.columnDef.meta?.align)}
+										>
 											{flexRender(
 												cell.column.columnDef.cell,
 												cell.getContext(),
@@ -198,7 +214,7 @@ export function DataGrid<TData, TValue = unknown>({
 			</div>
 			<div className="flex flex-wrap items-center justify-end gap-3">
 				<span role="status" className="mr-auto">
-					{table.getRowCount()} results · Page{" "}
+					{table.getRowCount().toLocaleString()} results · Page{" "}
 					{pageCount === 0 ? 0 : currentPage.pageIndex + 1} of {pageCount}
 				</span>
 				<Button
