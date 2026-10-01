@@ -15,12 +15,16 @@
 		"generate-routes": "vite build --logLevel warn"
 	},
 	"dependencies": {
+		"@salary-manager/contracts": "workspace:*",
 		"@salary-manager/ui": "workspace:*",
 		"@tailwindcss/vite": "^4.1.18",
 		"@tanstack/react-devtools": "latest",
+		"@tanstack/react-query": "^5.104.0",
+		"@tanstack/react-query-devtools": "^5.104.0",
 		"@tanstack/react-router": "latest",
 		"@tanstack/react-router-devtools": "latest",
 		"@tanstack/react-start": "latest",
+		"@ts-rest/core": "3.52.1",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
 		"tailwindcss": "^4.1.18"

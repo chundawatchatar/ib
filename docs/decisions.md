@@ -224,3 +224,17 @@ Directory requests with page size 1 took 9 ms without search, 16 ms for `EMP`,
 below the local 500 ms requirement. These are local samples, not a deployed or
 concurrent-load guarantee. Reproduce with the reports integration test's
 `reports the full seed` case and Vitest `--silent=false --reporter=verbose`.
+
+## Client-rendered single-page app
+
+**Decision:** Run TanStack Start in SPA mode. The build prerenders only the HTML
+shell; routes, loaders, and queries run in the browser. The client calls `/api`
+on its own origin, proxied to the API by the Vite dev and preview servers.
+
+**Why:** An internal HR tool behind a login gains nothing from server rendering
+or SEO. Client-only rendering removes per-request query caches, cache
+hydration, and a separate server-side API URL.
+
+**Trade-off:** First paint waits for the JavaScript bundle and the first API
+calls, covered by skeletons. Deployment must serve `/api` on the client's origin
+(reverse proxy) or the API must allow cross-origin requests.
