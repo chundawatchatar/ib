@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@salary-manager/ui";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { employeeQueries } from "#/features/employees/api";
 import {
 	directorySearchSchema,
 	toDirectoryQuery,
-} from "#/features/employees/directory-search";
-import { EmployeeDirectory } from "#/features/employees/EmployeeDirectory";
+} from "#/features/employees/directory/directory-search";
+import { EmployeeDirectory } from "#/features/employees/directory/EmployeeDirectory";
 import { referenceDataQuery } from "#/features/reference-data/api";
 
 export const Route = createFileRoute("/employees/")({
@@ -23,7 +24,14 @@ export const Route = createFileRoute("/employees/")({
 function Employees() {
 	return (
 		<main className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6">
-			<h1 className="m-0 text-2xl font-semibold">Employees</h1>
+			<div className="flex items-center justify-between gap-3">
+				<h1 className="m-0 text-2xl font-semibold">Employees</h1>
+				<Button asChild>
+					<Link to="/employees/new" className="no-underline">
+						New employee
+					</Link>
+				</Button>
+			</div>
 			<EmployeeDirectory />
 		</main>
 	);

@@ -51,23 +51,28 @@ Components never call `fetch` or the API client directly. All server data goes t
 - Build every form with React Hook Form and `zodResolver`, using the request schema from `packages/contracts` (or one derived from it with `.pick`/`.extend`). Never duplicate validation rules by hand; the server remains the authority.
 - Use the `@salary-manager/ui` controls. Native ones (Input, Textarea, Select, Checkbox) work with `register`; wrap any non-native control in `Controller`.
 - Pair each control with a `Label` (`htmlFor`/`id`). Show field errors below the control, set `aria-invalid`, and link the message with `aria-describedby`.
-- Load server data into the form with the `values` option (or `reset` after a successful save), not with `useEffect`. Convert money between display units and integer minor units at the form boundary.
+- Load server data with `defaultValues` when the form mounts (key the form by record id), and `reset` with the saved record after success; not with `useEffect`. Do not use the `values` option for versioned records: a background refetch would swap in a newer `version` under the user's stale edits and defeat the conflict check. Convert money between display units and integer minor units at the form boundary.
 - Submit through a mutation hook. Disable the submit button while the mutation is pending. On failure the form keeps the user's input: map field errors from the API onto fields with `setError`, and show a `409` conflict with an action to load the latest values (which resets the form, including the new `version`).
 
 ## Structure and tests
 
 ```
 apps/client/src/
-  routes/                 # thin route files
+  routes/                   # thin route files: search validation, loader, composition
   features/<feature>/
-    api.ts                # queryOptions factories + mutation hooks
-    EmployeeTable.tsx
-    EmployeeTable.test.tsx
+    api.ts                  # queryOptions factories + mutation hooks
+    <screen>/               # one folder per screen or flow (directory/, form/, details/)
+      EmployeeDirectory.tsx
+      EmployeeDirectory.test.tsx
+      directory-search.ts   # the screen's own helpers and schemas
+  lib/                      # API client, query client, form and format helpers
+  test/                     # renderApp harness, contract-shaped fixtures, setup
 packages/ui/src/components/
   SearchInput.tsx
   SearchInput.test.tsx
 ```
 
+- Group a feature's files by screen or flow in subfolders; keep one component per file. Code shared by several screens of a feature sits at the feature root (`api.ts`). Import across folders with the `#/` alias.
 - Keep each test next to the file it tests (`Component.test.tsx`). Shared component tests stay in `packages/ui`; feature tests stay in the client.
 - Test queries and mutation hooks through the components that use them. Mock at the network boundary with contract-shaped fixtures, and give each test a fresh `QueryClient` with retries off.
 

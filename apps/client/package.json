@@ -15,6 +15,7 @@
 		"generate-routes": "vite build --logLevel warn"
 	},
 	"dependencies": {
+		"@hookform/resolvers": "^5.9.1",
 		"@salary-manager/common": "workspace:*",
 		"@salary-manager/contracts": "workspace:*",
 		"@salary-manager/ui": "workspace:*",
@@ -28,6 +29,7 @@
 		"@ts-rest/core": "3.52.1",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
+		"react-hook-form": "^7.89.0",
 		"tailwindcss": "^4.1.18",
 		"zod": "^3.25.76"
 	},

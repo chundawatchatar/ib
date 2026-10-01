@@ -1,7 +1,7 @@
 import { parseMajorUnits } from "@salary-manager/common";
 import type { ReferenceDataResponse } from "@salary-manager/contracts";
 import { z } from "zod";
-import type { DirectoryQuery } from "./api";
+import type { DirectoryQuery } from "../api";
 
 // The router parses numeric-looking values ("123", "50000") as numbers, so
 // text parameters accept both. Invalid values are dropped instead of failing.
