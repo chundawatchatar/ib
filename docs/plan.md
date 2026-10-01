@@ -7,12 +7,11 @@ completes it and move it to Done; `git log` records which commit that was.
 
 ## Next
 
-- [ ] Pay insights: headcount, total, average, median, min, max, P25/P75 for the full filtered population; tested against the requirements acceptance numbers
-- [ ] Insights grouping (country, department, level, job title), salary histogram, local-currency and USD-normalized views
+- [ ] Insights grouping (country, department, level, job title), salary histogram
 - [ ] Client data layer: TanStack Query provider, ts-rest client, `unwrap` helper, and router-loader integration
 - [ ] Directory UI with search, filters, and pagination
 - [ ] Employee form and salary edit UI (React Hook Form with contract Zod schemas) with loading, error, and conflict states
-- [ ] Insights UI
+- [ ] Insights UI with a shared string-minor-unit display formatter in `packages/common` (no floating-point conversion)
 - [ ] CI: `pnpm check` and `pnpm test:db` against a PostgreSQL service
 
 ## Later
@@ -44,3 +43,5 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] Split employee and health contracts into feature modules composed by the main contract
 - [x] Contracts are the endpoint reference; the API README keeps only general conventions
 - [x] Salary edit API: optimistic version check, audit row in the same transaction, conflict response for stale edits
+
+- [x] Pay insights: headcount, total, average, median, min, max, P25/P75 for the full filtered population; tested against the requirements acceptance numbers

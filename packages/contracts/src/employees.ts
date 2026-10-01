@@ -1,24 +1,11 @@
 import { z } from "zod";
-import { integerQuery, paginationQuery, textQuery } from "./query";
-
-const salaryQuery = integerQuery(0, Number.MAX_SAFE_INTEGER);
+import { employeeFilterShape, validateSalaryRange } from "./employee-filters";
+import { paginationQuery, textQuery } from "./query";
 
 export const employeeDirectoryQuerySchema = z
 	.object({
 		...paginationQuery,
-		search: textQuery(200).optional(),
-		countryCode: z
-			.string()
-			.regex(/^[A-Z]{2}$/)
-			.optional(),
-		departmentId: z.string().uuid().optional(),
-		level: textQuery(100).pipe(z.string().min(1)).optional(),
-		currencyCode: z
-			.string()
-			.regex(/^[A-Z]{3}$/)
-			.optional(),
-		salaryMin: salaryQuery.optional(),
-		salaryMax: salaryQuery.optional(),
+		...employeeFilterShape,
 		status: z.enum(["all", "active", "inactive"]).default("all"),
 		sortBy: z
 			.enum([
@@ -34,29 +21,7 @@ export const employeeDirectoryQuerySchema = z
 		sortDirection: z.enum(["asc", "desc"]).default("asc"),
 	})
 	.strict()
-	.superRefine((query, context) => {
-		if (
-			(query.salaryMin !== undefined || query.salaryMax !== undefined) &&
-			!query.currencyCode
-		) {
-			context.addIssue({
-				code: z.ZodIssueCode.custom,
-				path: ["currencyCode"],
-				message: "Salary ranges require a currency",
-			});
-		}
-		if (
-			query.salaryMin !== undefined &&
-			query.salaryMax !== undefined &&
-			query.salaryMin > query.salaryMax
-		) {
-			context.addIssue({
-				code: z.ZodIssueCode.custom,
-				path: ["salaryMax"],
-				message: "Maximum salary must be at least the minimum",
-			});
-		}
-	});
+	.superRefine(validateSalaryRange);
 
 export const employeeDirectoryItemSchema = z.object({
 	id: z.string().uuid(),

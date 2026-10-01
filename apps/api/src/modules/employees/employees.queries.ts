@@ -14,52 +14,14 @@ import {
 	jobTitles,
 	salaryChanges,
 } from "@salary-manager/domain";
-import {
-	and,
-	asc,
-	count,
-	desc,
-	eq,
-	gte,
-	ilike,
-	lte,
-	or,
-	sql,
-} from "drizzle-orm";
+import { and, asc, count, desc, eq, sql } from "drizzle-orm";
+import { employeeWhere } from "./employee-filters";
 
 export async function listEmployees(
 	db: Pick<Database, "select">,
 	query: EmployeeDirectoryQuery,
 ): Promise<EmployeeDirectoryResponse> {
-	// Escape LIKE metacharacters: search is a literal substring, not a pattern.
-	const search = query.search?.replace(/[\\%_]/g, "\\$&");
-	const where = and(
-		search
-			? or(
-					ilike(employees.name, `%${search}%`),
-					ilike(employees.code, `%${search}%`),
-				)
-			: undefined,
-		query.countryCode
-			? eq(employees.countryCode, query.countryCode)
-			: undefined,
-		query.departmentId
-			? eq(employees.departmentId, query.departmentId)
-			: undefined,
-		query.level ? eq(employees.level, query.level) : undefined,
-		query.currencyCode
-			? eq(employees.currencyCode, query.currencyCode)
-			: undefined,
-		query.salaryMin !== undefined
-			? gte(employees.salaryMinorUnits, query.salaryMin)
-			: undefined,
-		query.salaryMax !== undefined
-			? lte(employees.salaryMinorUnits, query.salaryMax)
-			: undefined,
-		query.status !== "all"
-			? eq(employees.active, query.status === "active")
-			: undefined,
-	);
+	const where = employeeWhere(query);
 	const sortColumns = {
 		name: employees.name,
 		code: employees.code,

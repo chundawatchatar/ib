@@ -9,12 +9,14 @@ import {
 	createEmployeeUpdateController,
 } from "./modules/employees/employees.controller";
 import { createHealthController } from "./modules/health/health.controller";
+import { createInsightsController } from "./modules/insights/insights.controller";
 import type { Services } from "./services";
 
 const server = initServer();
 
 export function createRouter(services: Services) {
 	return server.router(contract, {
+		getPayInsightsSummary: createInsightsController(services.insights),
 		listEmployees: createEmployeeController(services.employees),
 		getEmployee: createEmployeeDetailsController(services.employees),
 		createEmployee: createEmployeeCreationController(services.employees),

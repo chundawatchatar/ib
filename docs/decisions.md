@@ -150,3 +150,25 @@ update, and retrying an old request must never create a second history row.
 
 **Trade-off:** Contending writes briefly wait for the row lock before returning
 a conflict. Clients must reload after 409 and send the new version for a new save.
+
+## Exact pay summaries and explicit report populations
+
+**Decision:** Insights reuse directory population filters but default to active
+employees. Local reports separate currencies; USD reports use the latest installed
+USD rate date and require rates only for currencies in the filtered population.
+Missing required rates return 422 because repairing master data is necessary;
+retrying cannot fix the report. Rates never fall back to an earlier date.
+
+Salary conversion uses numeric decimal scale factors and exact multiplication,
+retaining fractional USD minor units through aggregation. Median and quartiles
+number ordered rows and interpolate numeric neighbors at rank `1 + (n-1)*p`;
+`percentile_cont` is avoided because it uses double precision. Each final monetary
+statistic is rounded once to an integer minor unit, half up, and serialized as a
+decimal string. Sums can exceed JavaScript's safe integer range.
+
+**Why:** Reports must reflect the complete population without silently mixing
+currencies, losing large-value precision, or rounding each employee's conversion.
+
+**Trade-off:** Clients need string-money formatting, planned as a shared common
+helper with the insights UI. Empty local reports have no currency summaries;
+empty USD reports have one USD summary with zero total/count and null statistics.

@@ -3,6 +3,12 @@ import type { Services } from "./services";
 
 export function createTestServices(): Services {
 	return {
+		insights: {
+			summary: async () => ({
+				kind: "success",
+				report: { view: "local", headcount: 0, rateDate: null, summaries: [] },
+			}),
+		},
 		health: createHealthService(),
 		employees: {
 			get: async () => ({
