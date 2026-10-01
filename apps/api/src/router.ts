@@ -14,6 +14,7 @@ import {
 	createInsightsGroupsController,
 	createInsightsHistogramController,
 } from "./modules/insights/insights.controller";
+import { createReferenceDataController } from "./modules/reference-data/reference-data.controller";
 import type { Services } from "./services";
 
 const server = initServer();
@@ -36,5 +37,6 @@ export function createRouter(services: Services) {
 			services.employees,
 		),
 		health: createHealthController(services.health),
+		getReferenceData: createReferenceDataController(services.referenceData),
 	});
 }

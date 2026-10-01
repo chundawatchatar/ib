@@ -57,5 +57,14 @@ export function createTestServices(): Services {
 				pageSize: query.pageSize,
 			}),
 		},
+		referenceData: {
+			get: async () => ({
+				countries: [],
+				currencies: [],
+				departments: [],
+				jobTitles: [],
+				levels: [],
+			}),
+		},
 	};
 }

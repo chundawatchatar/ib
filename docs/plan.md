@@ -46,3 +46,4 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] Insights grouping (country, department, level, job title), salary histogram
 - [x] Performance check: directory search under 500 ms locally over 10,000 employees (9–16 ms sampled; environment and timings in decisions)
 - [x] Client data layer: TanStack Query provider, ts-rest client, `unwrap` helper, and router-loader integration
+- [x] Reference-data API (countries, currencies, departments, job titles, levels in use) for client filters and forms

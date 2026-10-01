@@ -7,4 +7,5 @@ export const ROUTE = {
 	DEACTIVATE_EMPLOYEE: "/api/employees/:id/deactivate",
 	EMPLOYEE_SALARY: "/api/employees/:id/salary",
 	HEALTH: "/api/health",
+	REFERENCE_DATA: "/api/reference-data",
 } as const;
