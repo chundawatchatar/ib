@@ -20,6 +20,8 @@
 	--ui-danger: #b42318;
 	--ui-on-danger: #ffffff;
 	--ui-radius: 0.375rem;
+	/* Validated for data marks (lightness band, chroma, 3:1 on the surface). */
+	--ui-chart: #1f6fa8;
 	color-scheme: light;
 }
 
@@ -35,6 +37,7 @@
 	--ui-focus: #7cb8d6;
 	--ui-danger: #f97066;
 	--ui-on-danger: #1a0b0a;
+	--ui-chart: #3f8fcc;
 	color-scheme: dark;
 }
 

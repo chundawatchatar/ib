@@ -7,7 +7,6 @@ completes it and move it to Done; `git log` records which commit that was.
 
 ## Next
 
-- [ ] Insights UI with a shared string-minor-unit display formatter in `packages/common` (no floating-point conversion)
 - [ ] CI: `pnpm check` and `pnpm test:db` against a PostgreSQL service
 
 ## Later
@@ -47,3 +46,4 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] Reference-data API (countries, currencies, departments, job titles, levels in use) for client filters and forms
 - [x] Directory UI with search, filters, and pagination
 - [x] Employee form and salary edit UI (React Hook Form with contract Zod schemas) with loading, error, and conflict states
+- [x] Insights UI with a shared string-minor-unit display formatter in `packages/common` (no floating-point conversion)

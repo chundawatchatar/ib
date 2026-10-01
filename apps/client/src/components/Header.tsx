@@ -28,6 +28,16 @@ export default function Header() {
 					>
 						Employees
 					</Link>
+					<Link
+						to="/insights"
+						className={navLinkClass}
+						activeProps={{
+							className: "text-foreground",
+							"aria-current": "page",
+						}}
+					>
+						Insights
+					</Link>
 				</div>
 				<div className="ml-auto">
 					<ThemeToggle />

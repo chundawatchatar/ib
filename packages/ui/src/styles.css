@@ -15,5 +15,6 @@
 	--color-ring: var(--ui-focus, #328f97);
 	--color-destructive: var(--ui-danger, #b42318);
 	--color-destructive-foreground: var(--ui-on-danger, #fff);
+	--color-chart: var(--ui-chart, #1f6fa8);
 	--radius-ui: var(--ui-radius, 0.5rem);
 }
