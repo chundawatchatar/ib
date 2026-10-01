@@ -9,11 +9,6 @@ completes it and move it to Done; `git log` records which commit that was.
 
 - [ ] Deploy API, client, and PostgreSQL; run migrations and seed ([steps](deployment.md)); link the app in the README
 
-## Later
-
-- [ ] `docs/ai-usage.md`: how agents, skills, and reviews were used, and where AI output was corrected
-- [ ] Record the demo video and link it in the README
-
 ## Done
 
 - [x] Workspace, TypeScript, and Biome setup
@@ -48,3 +43,5 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] CI: `pnpm check` and `pnpm test:db` against a PostgreSQL service
 - [x] Deployment setup: API Docker image with `PORT`, Render blueprint with `/api` proxy, manual migrate/seed workflow
 - [x] Root README: overview, architecture, setup, checks, links to docs
+- [x] `docs/ai-usage.md`: how agents, skills, and reviews were used, and where AI output was corrected
+- [x] Record the demo video and link it in the README

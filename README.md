@@ -74,6 +74,8 @@ CI runs `pnpm check` and `pnpm test:db` on every push and pull request.
 - [Decisions](docs/decisions.md): architectural choices and their trade-offs,
   including performance measurements
 - [Plan](docs/plan.md): build order and remaining work
+- [AI usage](docs/ai-usage.md): how coding agents were steered, checked,
+  and corrected
 - [Deployment](docs/deployment.md): hosting and what contributors must keep in
   mind
 - [Contributor guidelines](AGENTS.md) and [agent skills](.agents/skills/README.md):
