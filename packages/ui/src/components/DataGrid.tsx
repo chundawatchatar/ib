@@ -271,7 +271,7 @@ export function DataGrid<TData, TValue = unknown>({
 				)}
 				<div
 					aria-hidden="true"
-					className="ui-scroll-fade pointer-events-none sticky bottom-0 -mt-12 h-12 bg-linear-to-t from-surface to-transparent"
+					className="ui-scroll-fade pointer-events-none sticky bottom-0 -mt-12 h-12 shrink-0 bg-linear-to-t from-surface to-transparent"
 				/>
 			</div>
 			<div className="flex flex-wrap items-center justify-end gap-3">
