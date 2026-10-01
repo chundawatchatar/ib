@@ -7,11 +7,10 @@ completes it and move it to Done; `git log` records which commit that was.
 
 ## Next
 
-- [ ] CI: `pnpm check` and `pnpm test:db` against a PostgreSQL service
+- [ ] Deploy API, client, and PostgreSQL; run migrations and seed
 
 ## Later
 
-- [ ] Deploy API, client, and PostgreSQL; run migrations and seed
 - [ ] Root README: overview, setup, deployed link, demo video, links to docs
 - [ ] `docs/ai-usage.md`: how agents, skills, and reviews were used, and where AI output was corrected
 - [ ] Record the demo video
@@ -47,3 +46,4 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] Directory UI with search, filters, and pagination
 - [x] Employee form and salary edit UI (React Hook Form with contract Zod schemas) with loading, error, and conflict states
 - [x] Insights UI with a shared string-minor-unit display formatter in `packages/common` (no floating-point conversion)
+- [x] CI: `pnpm check` and `pnpm test:db` against a PostgreSQL service
