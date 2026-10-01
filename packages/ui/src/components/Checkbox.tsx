@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import { cn, disabledState, focusRing } from "../lib/utils.js";
+import { cn, disabledState, focusRing } from "../lib/utils";
 
 export type CheckboxProps = Omit<ComponentProps<"input">, "type">;
 export function Checkbox({ className, ...props }: CheckboxProps) {

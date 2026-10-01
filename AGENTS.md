@@ -37,7 +37,7 @@ Workspace projects use the same script names, in this order where they apply: `d
 
 ## Coding Style & Naming Conventions
 
-Use strictly typed TypeScript and ES modules. Preserve strict compiler settings, avoid `any`, and narrow or validate `unknown` values at external boundaries. Prefer type narrowing over unchecked assertions.
+Use strictly typed TypeScript and ES modules. Every project extends `tsconfig.base.json` (`moduleResolution: "Bundler"`), so relative imports have no file extension (`./services`, not `./services.js`); keep project tsconfigs to project-specific settings such as types, JSX, and paths. Preserve strict compiler settings, avoid `any`, and narrow or validate `unknown` values at external boundaries. Prefer type narrowing over unchecked assertions.
 
 Biome enforces tab indentation, double quotes, recommended lint rules, and errors on unused imports, variables, and parameters. Run `pnpm check` before submitting changes. VS Code recommendations and save settings are in `.vscode/`.
 

@@ -6,7 +6,7 @@ import {
 	screen,
 } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-import { Input } from "./Input.js";
+import { Input } from "./Input";
 
 afterEach(() => {
 	cleanup();

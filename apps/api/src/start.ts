@@ -1,8 +1,8 @@
 import { once } from "node:events";
 import type { Server } from "node:http";
 import { createDatabase, requireDatabaseUrl } from "@salary-manager/domain";
-import { createApp } from "./app.js";
-import { createServices } from "./services.js";
+import { createApp } from "./app";
+import { createServices } from "./services";
 
 export async function startApi(
 	databaseUrl = process.env.DATABASE_URL,

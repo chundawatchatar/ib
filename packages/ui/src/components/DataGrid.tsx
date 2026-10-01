@@ -10,10 +10,10 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { type ReactNode, useState } from "react";
-import { cn } from "../lib/utils.js";
-import { Alert } from "./Alert.js";
-import { Button } from "./Button.js";
-import { Skeleton } from "./Skeleton.js";
+import { cn } from "../lib/utils";
+import { Alert } from "./Alert";
+import { Button } from "./Button";
+import { Skeleton } from "./Skeleton";
 import {
 	Table,
 	TableBody,
@@ -21,7 +21,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "./Table.js";
+} from "./Table";
 
 export type DataGridProps<TData, TValue = unknown> = {
 	columns: ColumnDef<TData, TValue>[];

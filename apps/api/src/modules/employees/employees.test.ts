@@ -10,9 +10,9 @@ import {
 	it,
 	vi,
 } from "vitest";
-import { createApp } from "../../app.js";
-import { createTestServices } from "../../test-services.js";
-import type { EmployeeService } from "./employees.service.js";
+import { createApp } from "../../app";
+import { createTestServices } from "../../test-services";
+import type { EmployeeService } from "./employees.service";
 
 describe("directory HTTP contract", () => {
 	const list = vi.fn<EmployeeService["list"]>();
@@ -20,7 +20,10 @@ describe("directory HTTP contract", () => {
 	let url: string;
 	beforeAll(async () => {
 		server = createApp({
-			services: { ...createTestServices(), employees: { list } },
+			services: {
+				...createTestServices(),
+				employees: { ...createTestServices().employees, list },
+			},
 			logger: { info: vi.fn(), error: vi.fn() },
 		}).listen(0, "127.0.0.1");
 		await once(server, "listening");

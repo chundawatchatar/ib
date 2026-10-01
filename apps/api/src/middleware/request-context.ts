@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { RequestHandler } from "express";
-import type { Logger } from "../logger.js";
+import type { Logger } from "../logger";
 
 export function requestContext(logger: Logger): RequestHandler {
 	return (request, response, next) => {

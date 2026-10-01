@@ -7,7 +7,7 @@ import {
 	primaryKey,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { currencies } from "./currencies.js";
+import { currencies } from "./currencies";
 
 // Static dated rates; reports state the rate date they convert at.
 export const fxRates = pgTable(

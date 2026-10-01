@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import type { ComponentProps } from "react";
-import { cn } from "../lib/utils.js";
+import { cn } from "../lib/utils";
 
 export const alertVariants = cva("rounded-ui border bg-surface p-5", {
 	variants: {

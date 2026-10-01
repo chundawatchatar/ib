@@ -1,44 +1,19 @@
-import { ROUTE } from "@salary-manager/common";
 import { initContract } from "@ts-rest/core";
-import {
-	employeeDirectoryQuerySchema,
-	employeeDirectoryResponseSchema,
-} from "./employees.js";
-import { apiErrorSchema } from "./errors.js";
-import { healthResponseSchema } from "./health.js";
+import { employeeContract } from "./employees.contract";
+import { healthContract } from "./health.contract";
 
-export * from "./employees.js";
+export * from "./employees";
+export { employeeContract } from "./employees.contract";
 export {
 	type ApiError,
 	type ApiErrorIssue,
 	apiErrorIssueSchema,
 	apiErrorSchema,
-} from "./errors.js";
-export { type HealthResponse, healthResponseSchema } from "./health.js";
-export { integerQuery, paginationQuery, textQuery } from "./query.js";
+} from "./errors";
+export { type HealthResponse, healthResponseSchema } from "./health";
+export { healthContract } from "./health.contract";
+export { integerQuery, paginationQuery, textQuery } from "./query";
 
 const c = initContract();
 
-export const contract = c.router(
-	{
-		listEmployees: {
-			method: "GET",
-			path: ROUTE.EMPLOYEES,
-			query: employeeDirectoryQuerySchema,
-			responses: { 200: employeeDirectoryResponseSchema },
-		},
-		health: {
-			method: "GET",
-			path: ROUTE.HEALTH,
-			responses: { 200: healthResponseSchema },
-		},
-	},
-	{
-		commonResponses: {
-			400: apiErrorSchema,
-			413: apiErrorSchema,
-			415: apiErrorSchema,
-			500: apiErrorSchema,
-		},
-	},
-);
+export const contract = c.router({ ...employeeContract, ...healthContract });

@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { check, pgTable, text, varchar } from "drizzle-orm/pg-core";
-import { currencies } from "./currencies.js";
+import { currencies } from "./currencies";
 
 export const countries = pgTable(
 	"countries",

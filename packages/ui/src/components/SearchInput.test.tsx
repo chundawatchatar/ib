@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, expect, it } from "vitest";
-import { SearchInput } from "./SearchInput.js";
+import { SearchInput } from "./SearchInput";
 
 afterEach(cleanup);
 it("retains the search convenience wrapper", () => {

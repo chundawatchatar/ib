@@ -9,9 +9,9 @@ import {
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { MAX_SALARY_MINOR_UNITS, salary, time } from "./columns.js";
-import { currencies } from "./currencies.js";
-import { employees } from "./employees.js";
+import { MAX_SALARY_MINOR_UNITS, salary, time } from "./columns";
+import { currencies } from "./currencies";
+import { employees } from "./employees";
 
 // One row per salary edit, written in the same transaction as the update.
 export const salaryChanges = pgTable(

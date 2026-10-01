@@ -35,10 +35,18 @@ through its environment. PostgreSQL must be reachable before starting the API.
 ## Server architecture
 
 `src/app.ts` exports `createApp({ services, logger })`. It assembles middleware and
-the typed router without opening a socket or database connection. Startup supplies services constructed with the connected database; the logger
-has a production default. HTTP tests supply service doubles, and each call
-returns a fresh application. `src/start.ts` owns PostgreSQL connectivity, the listener, and
-graceful shutdown. `src/index.ts` is the executable entry point and signal handler.
+the typed router without opening a socket or database connection. Startup supplies
+services constructed with the connected database; the logger has a production
+default. HTTP tests supply service doubles, and each call returns a fresh
+application. `src/start.ts` owns PostgreSQL connectivity, the listener, and graceful
+shutdown. `src/index.ts` is the executable entry point and signal handler.
+
+API contracts are split by feature in `packages/contracts/src/`.
+`<feature>.contract.ts` declares routes using the schemas and inferred types in
+`<feature>.ts`. Each feature contract uses `contract-options.ts` for shared error
+responses. `index.ts` exports and composes feature contracts into the main
+`contract`, keeping route names flat. Add routes to the owning feature contract;
+register new feature contracts in the main composition.
 
 Feature code lives together under `src/modules/<feature>/`:
 
@@ -47,12 +55,14 @@ Feature code lives together under `src/modules/<feature>/`:
 - `<feature>.service.ts` owns application behavior and transaction boundaries.
 - Add `<feature>.queries.ts` when database-backed behavior arrives; it owns
   parameterized Drizzle queries. Persistence entities remain in the server-only
-  domain package, and Queries select explicit contract fields rather than exposing persistence rows.
+  domain package. Queries select explicit contract fields rather than exposing
+  persistence rows.
 
 `src/services.ts` constructs services and defines the injectable service bundle;
-`src/router.ts` connects controllers to the shared ts-rest contract. Startup passes its connected database to the service factory.
-The health service currently needs no database dependency. There is no shared
-base controller or generic repository layer.
+`src/router.ts` connects controllers to the shared ts-rest contract. Startup
+passes its connected database to the service factory; services receive the
+dependencies they use. There is no shared base controller or generic repository
+layer.
 
 Middleware runs in this order: request context, JSON parser, contract endpoints,
 JSON 404 fallback, centralized error handler. Request context returns an
@@ -72,36 +82,31 @@ Unknown routes return a JSON 404. Controllers let unexpected failures propagate
 to the centralized handler. Future endpoints declare expected domain errors
 (such as 404 or stale-edit 409) in their contracts and map them in controllers.
 
-## Employee directory
+## Adding a feature
 
-`GET /api/employees` returns `{ items, page, pageSize, total }`. Each item includes
-employee identifiers, name, country and currency codes, country/department/title
-labels, currency precision, local salary in integer minor units, activity, and
-version. The directory includes active and inactive employees by default.
+1. Define route constants in `packages/common/src/routes.ts` and schemas, inferred
+   types, and routes in the feature's contract files. Compose the feature contract
+   in `packages/contracts/src/index.ts`.
+2. Implement the controller, service, and queries under `src/modules/<feature>/`.
+   Keep HTTP mapping in controllers and business rules and transactions in services.
+3. Construct the service in `src/services.ts`, register controllers in
+   `src/router.ts`, and add defaults to `src/test-services.ts` for unrelated tests.
+4. Keep endpoint documentation in `src/modules/<feature>/README.md`: methods,
+   paths, inputs, response shapes, expected errors, and feature-specific behavior.
+   Shared setup and architecture conventions belong in this README.
+5. Add HTTP and persistence coverage alongside the feature, then run the checks
+   below. Follow the repository's local API and backend-test skills.
 
-| Query | Behavior |
-| --- | --- |
-| `page`, `pageSize` | One-based page (default 1, maximum 1,000,000); size 1–100 (default 25) |
-| `search` | Trimmed literal case-insensitive substring of name or code; maximum 200 characters; no control characters |
-| `countryCode`, `currencyCode` | Exact uppercase two-letter country / three-letter currency code |
-| `departmentId`, `level` | Exact department UUID / level (maximum 100 characters; no control characters) |
-| `salaryMin`, `salaryMax` | Inclusive integer minor-unit bounds, 0 through the JavaScript safe-integer maximum; require `currencyCode`; minimum cannot exceed maximum |
-| `status` | `all` (default), `active`, or `inactive` |
-| `sortBy` | `name` (default), `code`, `country`, `department`, `level`, `currency`, or `salary` |
-| `sortDirection` | `asc` (default) or `desc` |
+## Verification
 
-Country and department sorts use display names; salary sorts use stored local
-minor-unit amounts. Use a currency filter for meaningful salary comparisons.
-All sorts use employee ID ascending to break ties. Filters combine with AND;
-name/code search uses OR. Empty or out-of-range pages retain the full matching
-count. Count and page reads share a read-only repeatable-read transaction.
-Unknown query keys, malformed values, and repeated scalar parameters return 400
-with field-level query issues. Well-formed filters without matches return 200
-with an empty population.
-
-For example, `/api/employees?currencyCode=USD&salaryMin=10000000&pageSize=50`
-finds annual USD salaries of at least $100,000, returning up to 50 rows.
+Run `pnpm check` from the repository root for formatting, lint, typechecks, and
+unit/HTTP tests. HTTP tests use injected services and ephemeral loopback ports;
+they do not require PostgreSQL.
 
 Run `pnpm test:db` for both domain and API PostgreSQL integration tests. The tests
 create and drop uniquely named databases using `TEST_DATABASE_URL`, apply real
 migrations, and leave the development database untouched.
+
+Keep database tests in `*.integration.test.ts` and ordinary tests in `*.test.ts`.
+Run `pnpm --filter @salary-manager/api build` to verify the production bundle when
+changing imports, contract composition, or startup.

@@ -1,11 +1,11 @@
 import { contract } from "@salary-manager/contracts";
 import { createExpressEndpoints } from "@ts-rest/express";
 import express, { type Express } from "express";
-import { consoleLogger, type Logger } from "./logger.js";
-import { errorHandler, notFound } from "./middleware/errors.js";
-import { requestContext } from "./middleware/request-context.js";
-import { createRouter } from "./router.js";
-import type { Services } from "./services.js";
+import { consoleLogger, type Logger } from "./logger";
+import { errorHandler, notFound } from "./middleware/errors";
+import { requestContext } from "./middleware/request-context";
+import { createRouter } from "./router";
+import type { Services } from "./services";
 
 type AppDependencies = {
 	services: Services;

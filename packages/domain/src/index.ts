@@ -1,7 +1,7 @@
-export { requireDatabaseUrl } from "./configuration.js";
+export { requireDatabaseUrl } from "./configuration";
 export {
 	createDatabase,
 	type Database,
 	type DatabaseConnection,
-} from "./database.js";
-export * from "./schema/index.js";
+} from "./database";
+export * from "./schema/index";

@@ -118,3 +118,20 @@ bounded JSON parsing, and consistent error responses.
 **Trade-off:** The health endpoint is simple enough to fit in one file, but now
 establishes the module convention. Avoid generic base controllers or repositories;
 add query files and database dependencies when a feature actually uses them.
+
+## Employee profile edits keep compensation separate
+
+**Decision:** Create accepts the initial salary and explicit currency. Profile
+updates replace the profile fields and require the current version; salary and
+currency changes go through the later salary-edit API. Deactivation also requires
+a version, retains employee/audit rows, and is a no-op when already inactive at
+that version. These operations share one employee service and query module.
+
+**Why:** A profile-edit path must not bypass salary audit requirements. Row locks
+and version checks keep profile edits, deactivation, and future salary changes
+from overwriting each other. Validated references are held with key-share locks
+until the transaction commits, and duplicate-code updates roll back fully.
+
+**Trade-off:** Clients must send the complete profile and version, and reload on
+conflicts. Initial salary creation is not a salary change; profile edits do not
+produce salary audit entries. Salary audit writes remain the next plan item.

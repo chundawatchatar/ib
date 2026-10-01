@@ -1,6 +1,8 @@
 import type {
+	CreateEmployeeRequest,
 	EmployeeDirectoryQuery,
 	EmployeeDirectoryResponse,
+	UpdateEmployeeRequest,
 } from "@salary-manager/contracts";
 import {
 	countries,
@@ -10,7 +12,18 @@ import {
 	employees,
 	jobTitles,
 } from "@salary-manager/domain";
-import { and, asc, count, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
+import {
+	and,
+	asc,
+	count,
+	desc,
+	eq,
+	gte,
+	ilike,
+	lte,
+	or,
+	sql,
+} from "drizzle-orm";
 
 export async function listEmployees(
 	db: Pick<Database, "select">,
@@ -61,23 +74,7 @@ export async function listEmployees(
 		.from(employees)
 		.where(where);
 	const items = await db
-		.select({
-			id: employees.id,
-			code: employees.code,
-			name: employees.name,
-			countryCode: employees.countryCode,
-			countryName: countries.name,
-			currencyCode: employees.currencyCode,
-			currencyMinorUnits: currencies.minorUnits,
-			departmentId: employees.departmentId,
-			departmentName: departments.name,
-			level: employees.level,
-			jobTitleId: employees.jobTitleId,
-			jobTitleName: jobTitles.name,
-			salaryMinorUnits: employees.salaryMinorUnits,
-			active: employees.active,
-			version: employees.version,
-		})
+		.select(employeeSelection)
 		.from(employees)
 		.innerJoin(countries, eq(employees.countryCode, countries.code))
 		.innerJoin(currencies, eq(employees.currencyCode, currencies.code))
@@ -93,4 +90,131 @@ export async function listEmployees(
 		page: query.page,
 		pageSize: query.pageSize,
 	};
+}
+
+const employeeSelection = {
+	id: employees.id,
+	code: employees.code,
+	name: employees.name,
+	countryCode: employees.countryCode,
+	countryName: countries.name,
+	currencyCode: employees.currencyCode,
+	currencyMinorUnits: currencies.minorUnits,
+	departmentId: employees.departmentId,
+	departmentName: departments.name,
+	level: employees.level,
+	jobTitleId: employees.jobTitleId,
+	jobTitleName: jobTitles.name,
+	salaryMinorUnits: employees.salaryMinorUnits,
+	active: employees.active,
+	version: employees.version,
+};
+
+export async function getEmployee(db: Pick<Database, "select">, id: string) {
+	const [row] = await db
+		.select({
+			...employeeSelection,
+			createdAt: employees.createdAt,
+			updatedAt: employees.updatedAt,
+		})
+		.from(employees)
+		.innerJoin(countries, eq(employees.countryCode, countries.code))
+		.innerJoin(currencies, eq(employees.currencyCode, currencies.code))
+		.innerJoin(departments, eq(employees.departmentId, departments.id))
+		.innerJoin(jobTitles, eq(employees.jobTitleId, jobTitles.id))
+		.where(eq(employees.id, id));
+	return row
+		? {
+				...row,
+				createdAt: row.createdAt.toISOString(),
+				updatedAt: row.updatedAt.toISOString(),
+			}
+		: undefined;
+}
+
+export async function lockEmployee(db: Pick<Database, "select">, id: string) {
+	const [row] = await db
+		.select({ version: employees.version, active: employees.active })
+		.from(employees)
+		.where(eq(employees.id, id))
+		.for("update");
+	return row;
+}
+
+export async function insertEmployee(
+	db: Pick<Database, "insert">,
+	body: CreateEmployeeRequest,
+) {
+	const [row] = await db
+		.insert(employees)
+		.values(body)
+		.onConflictDoNothing({ target: employees.code })
+		.returning({ id: employees.id });
+	return row?.id;
+}
+
+export async function updateEmployee(
+	db: Pick<Database, "update">,
+	id: string,
+	body: UpdateEmployeeRequest,
+) {
+	const { version, ...profile } = body;
+	await db
+		.update(employees)
+		.set({
+			...profile,
+			version: version + 1,
+			updatedAt: sql`clock_timestamp()`,
+		})
+		.where(and(eq(employees.id, id), eq(employees.version, version)));
+}
+
+export async function deactivateEmployee(
+	db: Pick<Database, "update">,
+	id: string,
+	version: number,
+) {
+	await db
+		.update(employees)
+		.set({
+			active: false,
+			version: version + 1,
+			updatedAt: sql`clock_timestamp()`,
+		})
+		.where(and(eq(employees.id, id), eq(employees.version, version)));
+}
+
+export async function invalidEmployeeReferences(
+	db: Pick<Database, "select">,
+	body: CreateEmployeeRequest | UpdateEmployeeRequest,
+) {
+	// Key-share locks keep validated references present until the write commits.
+	const [country] = await db
+		.select({ code: countries.code })
+		.from(countries)
+		.where(eq(countries.code, body.countryCode))
+		.for("key share");
+	const [department] = await db
+		.select({ id: departments.id })
+		.from(departments)
+		.where(eq(departments.id, body.departmentId))
+		.for("key share");
+	const [title] = await db
+		.select({ id: jobTitles.id })
+		.from(jobTitles)
+		.where(eq(jobTitles.id, body.jobTitleId))
+		.for("key share");
+	const missing: string[] = [];
+	if (!country) missing.push("countryCode");
+	if (!department) missing.push("departmentId");
+	if (!title) missing.push("jobTitleId");
+	if ("currencyCode" in body) {
+		const [currency] = await db
+			.select({ code: currencies.code })
+			.from(currencies)
+			.where(eq(currencies.code, body.currencyCode))
+			.for("key share");
+		if (!currency) missing.push("currencyCode");
+	}
+	return missing;
 }

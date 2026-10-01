@@ -10,10 +10,10 @@ import {
 	expect,
 	it,
 } from "vitest";
-import { requireDatabaseUrl } from "./configuration.js";
-import { createDatabase, type DatabaseConnection } from "./database.js";
-import { loadRootEnv } from "./env.js";
-import { applyMigrations } from "./migrate.js";
+import { requireDatabaseUrl } from "./configuration";
+import { createDatabase, type DatabaseConnection } from "./database";
+import { loadRootEnv } from "./env";
+import { applyMigrations } from "./migrate";
 import {
 	countries,
 	currencies,
@@ -22,8 +22,8 @@ import {
 	fxRates,
 	jobTitles,
 	salaryChanges,
-} from "./schema/index.js";
-import { generateEmployees, type SeedEmployee, seedEmployees } from "./seed.js";
+} from "./schema/index";
+import { generateEmployees, type SeedEmployee, seedEmployees } from "./seed";
 
 loadRootEnv();
 

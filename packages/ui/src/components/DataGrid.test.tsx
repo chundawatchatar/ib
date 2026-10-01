@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-import { DataGrid } from "./DataGrid.js";
+import { DataGrid } from "./DataGrid";
 
 afterEach(cleanup);
 const columns = [{ accessorKey: "name", header: "Name" }];

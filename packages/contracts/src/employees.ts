@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { integerQuery, paginationQuery, textQuery } from "./query.js";
+import { integerQuery, paginationQuery, textQuery } from "./query";
 
 const salaryQuery = integerQuery(0, Number.MAX_SAFE_INTEGER);
 
@@ -89,3 +89,47 @@ export type EmployeeDirectoryItem = z.infer<typeof employeeDirectoryItemSchema>;
 export type EmployeeDirectoryResponse = z.infer<
 	typeof employeeDirectoryResponseSchema
 >;
+
+const requiredText = (maximum: number) =>
+	textQuery(maximum).pipe(z.string().min(1));
+const employeeProfileShape = {
+	code: requiredText(100),
+	name: requiredText(200),
+	countryCode: z.string().regex(/^[A-Z]{2}$/),
+	departmentId: z.string().uuid(),
+	level: requiredText(100),
+	jobTitleId: z.string().uuid(),
+};
+// PostgreSQL versions are int4; reserve room for the next version.
+const expectedVersionSchema = z.number().int().min(1).max(2_147_483_646);
+
+export const employeeParamsSchema = z
+	.object({ id: z.string().uuid() })
+	.strict();
+export const createEmployeeRequestSchema = z
+	.object({
+		...employeeProfileShape,
+		currencyCode: z.string().regex(/^[A-Z]{3}$/),
+		salaryMinorUnits: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+	})
+	.strict();
+export const updateEmployeeRequestSchema = z
+	.object({
+		...employeeProfileShape,
+		version: expectedVersionSchema,
+	})
+	.strict();
+export const deactivateEmployeeRequestSchema = z
+	.object({ version: expectedVersionSchema })
+	.strict();
+export const employeeResponseSchema = employeeDirectoryItemSchema.extend({
+	createdAt: z.string().datetime(),
+	updatedAt: z.string().datetime(),
+});
+export type EmployeeParams = z.infer<typeof employeeParamsSchema>;
+export type CreateEmployeeRequest = z.infer<typeof createEmployeeRequestSchema>;
+export type UpdateEmployeeRequest = z.infer<typeof updateEmployeeRequestSchema>;
+export type DeactivateEmployeeRequest = z.infer<
+	typeof deactivateEmployeeRequestSchema
+>;
+export type EmployeeResponse = z.infer<typeof employeeResponseSchema>;

@@ -1,7 +1,7 @@
 import { once } from "node:events";
 import { createServer } from "node:net";
 import { describe, expect, it } from "vitest";
-import { startApi } from "./start.js";
+import { startApi } from "./start";
 
 describe("API startup", () => {
 	it("rejects missing and invalid database configuration", async () => {

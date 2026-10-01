@@ -1,7 +1,7 @@
 import type { ApiError, ApiErrorIssue } from "@salary-manager/contracts";
 import { RequestValidationError } from "@ts-rest/express";
 import type { ErrorRequestHandler, RequestHandler } from "express";
-import type { Logger } from "../logger.js";
+import type { Logger } from "../logger";
 
 export const notFound: RequestHandler = (_request, response) => {
 	const body: ApiError = { message: "Route not found" };

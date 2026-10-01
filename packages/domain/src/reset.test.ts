@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { requireDatabaseUrl } from "./configuration.js";
-import { assertLocalResetTarget } from "./reset.js";
+import { requireDatabaseUrl } from "./configuration";
+import { assertLocalResetTarget } from "./reset";
 
 describe("database configuration", () => {
 	it("requires a PostgreSQL URL with a database", () => {

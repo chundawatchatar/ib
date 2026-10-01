@@ -1,9 +1,9 @@
-import { requireDatabaseUrl } from "./configuration.js";
-import { createDatabase } from "./database.js";
-import { loadRootEnv } from "./env.js";
-import { applyMigrations } from "./migrate.js";
-import { resetDatabase } from "./reset.js";
-import { generateEmployees, seedEmployees } from "./seed.js";
+import { requireDatabaseUrl } from "./configuration";
+import { createDatabase } from "./database";
+import { loadRootEnv } from "./env";
+import { applyMigrations } from "./migrate";
+import { resetDatabase } from "./reset";
+import { generateEmployees, seedEmployees } from "./seed";
 
 async function main(): Promise<void> {
 	loadRootEnv();

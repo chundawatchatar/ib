@@ -3,9 +3,9 @@ import type { Server } from "node:http";
 import { apiErrorSchema, contract } from "@salary-manager/contracts";
 import { RequestValidationError } from "@ts-rest/express";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createApp } from "./app.js";
-import type { HealthService } from "./modules/health/health.service.js";
-import { createTestServices } from "./test-services.js";
+import { createApp } from "./app";
+import type { HealthService } from "./modules/health/health.service";
+import { createTestServices } from "./test-services";
 
 describe("application middleware and controller boundaries", () => {
 	let server: Server;

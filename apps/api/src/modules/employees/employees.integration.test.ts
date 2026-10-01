@@ -13,7 +13,7 @@ import {
 } from "@salary-manager/domain/testing";
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { startApi } from "../../start.js";
+import { startApi } from "../../start";
 
 const id = (number: number) =>
 	`00000000-0000-4000-8000-${number.toString().padStart(12, "0")}`;

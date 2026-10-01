@@ -9,11 +9,11 @@ import {
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { MAX_SALARY_MINOR_UNITS, salary, time } from "./columns.js";
-import { countries } from "./countries.js";
-import { currencies } from "./currencies.js";
-import { departments } from "./departments.js";
-import { jobTitles } from "./job-titles.js";
+import { MAX_SALARY_MINOR_UNITS, salary, time } from "./columns";
+import { countries } from "./countries";
+import { currencies } from "./currencies";
+import { departments } from "./departments";
+import { jobTitles } from "./job-titles";
 
 export const employees = pgTable(
 	"employees",

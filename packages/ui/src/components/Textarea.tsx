@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
-import { cn } from "../lib/utils.js";
-import { fieldClasses } from "./Input.js";
+import { cn } from "../lib/utils";
+import { fieldClasses } from "./Input";
 
 export type TextareaProps = ComponentProps<"textarea">;
 export function Textarea({ className, ...props }: TextareaProps) {

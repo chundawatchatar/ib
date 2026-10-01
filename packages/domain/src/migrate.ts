@@ -1,6 +1,6 @@
 import { fileURLToPath } from "node:url";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
-import type { Database } from "./database.js";
+import type { Database } from "./database";
 
 export function applyMigrations(db: Database): Promise<void> {
 	return migrate(db, {

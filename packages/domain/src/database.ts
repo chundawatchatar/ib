@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
-import { requireDatabaseUrl } from "./configuration.js";
-import * as schema from "./schema/index.js";
+import { requireDatabaseUrl } from "./configuration";
+import * as schema from "./schema/index";
 
 export function createDatabase(databaseUrl: string) {
 	const pool = new pg.Pool({

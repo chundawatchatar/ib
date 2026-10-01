@@ -1,7 +1,7 @@
 import pg from "pg";
-import { requireDatabaseUrl } from "./configuration.js";
-import { createDatabase } from "./database.js";
-import { applyMigrations } from "./migrate.js";
+import { requireDatabaseUrl } from "./configuration";
+import { createDatabase } from "./database";
+import { applyMigrations } from "./migrate";
 
 // Host port published by compose.yaml.
 const LOCAL_PORT = "55432";

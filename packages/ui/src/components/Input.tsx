@@ -1,5 +1,5 @@
 import { type ComponentProps, useEffect, useRef } from "react";
-import { cn, disabledState, focusRing } from "../lib/utils.js";
+import { cn, disabledState, focusRing } from "../lib/utils";
 
 // Shared by Input, Select, and Textarea.
 export const fieldClasses = cn(

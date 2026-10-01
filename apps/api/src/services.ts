@@ -1,6 +1,6 @@
 import type { Database } from "@salary-manager/domain";
-import { createEmployeeService } from "./modules/employees/employees.service.js";
-import { createHealthService } from "./modules/health/health.service.js";
+import { createEmployeeService } from "./modules/employees/employees.service";
+import { createHealthService } from "./modules/health/health.service";
 
 export function createServices(db: Database) {
 	return {

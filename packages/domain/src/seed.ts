@@ -15,13 +15,13 @@ import {
 	type Randomizer,
 } from "@faker-js/faker";
 import { sql } from "drizzle-orm";
-import type { Database } from "./database.js";
+import type { Database } from "./database";
 import {
 	departments as departmentTable,
 	employees,
 	jobTitles as jobTitleTable,
 	type NewEmployee,
-} from "./schema/index.js";
+} from "./schema/index";
 
 // Departments and job titles are referenced by name; their IDs are owned by
 // migrations/0001_master_data.sql and resolved when seeding.

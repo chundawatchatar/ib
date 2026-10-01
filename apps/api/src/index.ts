@@ -1,4 +1,4 @@
-import { startApi } from "./start.js";
+import { startApi } from "./start";
 
 async function main(): Promise<void> {
 	const runtime = await startApi();

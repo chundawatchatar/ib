@@ -1,11 +1,11 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, it } from "vitest";
-import { Button } from "./Button.js";
-import { Checkbox } from "./Checkbox.js";
-import { Input } from "./Input.js";
-import { Label } from "./Label.js";
-import { Select } from "./Select.js";
-import { Textarea } from "./Textarea.js";
+import { Button } from "./Button";
+import { Checkbox } from "./Checkbox";
+import { Input } from "./Input";
+import { Label } from "./Label";
+import { Select } from "./Select";
+import { Textarea } from "./Textarea";
 
 afterEach(cleanup);
 it("preserves labeled native form controls and selected values", () => {

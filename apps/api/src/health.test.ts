@@ -2,8 +2,8 @@ import { once } from "node:events";
 import type { Server } from "node:http";
 import { contract } from "@salary-manager/contracts";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createApp } from "./app.js";
-import { createTestServices } from "./test-services.js";
+import { createApp } from "./app";
+import { createTestServices } from "./test-services";
 
 describe("HTTP API", () => {
 	let server: Server;

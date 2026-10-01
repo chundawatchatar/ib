@@ -1,18 +1,18 @@
 import { randomUUID } from "node:crypto";
 import pg from "pg";
-import { requireDatabaseUrl } from "./configuration.js";
-import { createDatabase, type DatabaseConnection } from "./database.js";
-import { loadRootEnv } from "./env.js";
-import { applyMigrations } from "./migrate.js";
+import { requireDatabaseUrl } from "./configuration";
+import { createDatabase, type DatabaseConnection } from "./database";
+import { loadRootEnv } from "./env";
+import { applyMigrations } from "./migrate";
 
 // Test-only helpers for integration tests in other workspace projects.
 // Import from "@salary-manager/domain/testing"; never from application code.
-export { applyMigrations } from "./migrate.js";
+export { applyMigrations } from "./migrate";
 export {
 	generateEmployees,
 	type SeedEmployee,
 	seedEmployees,
-} from "./seed.js";
+} from "./seed";
 
 export type TestDatabase = {
 	connection: DatabaseConnection;

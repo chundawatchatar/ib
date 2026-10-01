@@ -4,17 +4,17 @@ export type {
 	PaginationState,
 	SortingState,
 } from "@tanstack/react-table";
-export * from "./components/Alert.js";
-export * from "./components/Badge.js";
-export * from "./components/Button.js";
-export * from "./components/Card.js";
-export * from "./components/Checkbox.js";
-export * from "./components/DataGrid.js";
-export * from "./components/Input.js";
-export * from "./components/Label.js";
-export * from "./components/SearchInput.js";
-export * from "./components/Select.js";
-export * from "./components/Skeleton.js";
-export * from "./components/Table.js";
-export * from "./components/Textarea.js";
-export { cn } from "./lib/utils.js";
+export * from "./components/Alert";
+export * from "./components/Badge";
+export * from "./components/Button";
+export * from "./components/Card";
+export * from "./components/Checkbox";
+export * from "./components/DataGrid";
+export * from "./components/Input";
+export * from "./components/Label";
+export * from "./components/SearchInput";
+export * from "./components/Select";
+export * from "./components/Skeleton";
+export * from "./components/Table";
+export * from "./components/Textarea";
+export { cn } from "./lib/utils";

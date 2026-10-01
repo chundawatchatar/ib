@@ -1,4 +1,4 @@
-import { Input, type InputProps } from "./Input.js";
+import { Input, type InputProps } from "./Input";
 
 export type SearchInputProps = Omit<
 	InputProps,

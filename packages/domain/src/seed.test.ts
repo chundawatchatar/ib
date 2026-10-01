@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generateEmployees } from "./seed.js";
+import { generateEmployees } from "./seed";
 
 const employees = generateEmployees();
 

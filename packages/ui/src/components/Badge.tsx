@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import type { ComponentProps } from "react";
-import { cn } from "../lib/utils.js";
+import { cn } from "../lib/utils";
 
 // Each variant sets its own text, border, and background so none inherit
 // from the base and variants never depend on CSS rule order.

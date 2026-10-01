@@ -1,6 +1,6 @@
 import type { contract } from "@salary-manager/contracts";
 import type { AppRouteImplementation } from "@ts-rest/express";
-import type { HealthService } from "./health.service.js";
+import type { HealthService } from "./health.service";
 
 export function createHealthController(
 	service: HealthService,
