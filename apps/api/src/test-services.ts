@@ -17,6 +17,10 @@ export function createTestServices(): Services {
 				kind: "notFound",
 				error: { message: "Employee not found" },
 			}),
+			updateSalary: async () => ({
+				kind: "notFound",
+				error: { message: "Employee not found" },
+			}),
 			deactivate: async () => ({
 				kind: "notFound",
 				error: { message: "Employee not found" },

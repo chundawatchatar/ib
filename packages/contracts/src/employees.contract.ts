@@ -9,6 +9,7 @@ import {
 	employeeParamsSchema,
 	employeeResponseSchema,
 	updateEmployeeRequestSchema,
+	updateEmployeeSalaryRequestSchema,
 } from "./employees";
 import { apiErrorSchema } from "./errors";
 
@@ -39,6 +40,17 @@ export const employeeContract = c.router(
 			path: ROUTE.EMPLOYEE,
 			pathParams: employeeParamsSchema,
 			body: updateEmployeeRequestSchema,
+			responses: {
+				200: employeeResponseSchema,
+				404: apiErrorSchema,
+				409: apiErrorSchema,
+			},
+		},
+		updateEmployeeSalary: {
+			method: "PUT",
+			path: ROUTE.EMPLOYEE_SALARY,
+			pathParams: employeeParamsSchema,
+			body: updateEmployeeSalaryRequestSchema,
 			responses: {
 				200: employeeResponseSchema,
 				404: apiErrorSchema,

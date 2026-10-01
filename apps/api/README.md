@@ -91,9 +91,10 @@ to the centralized handler. Future endpoints declare expected domain errors
    Keep HTTP mapping in controllers and business rules and transactions in services.
 3. Construct the service in `src/services.ts`, register controllers in
    `src/router.ts`, and add defaults to `src/test-services.ts` for unrelated tests.
-4. Keep endpoint documentation in `src/modules/<feature>/README.md`: methods,
-   paths, inputs, response shapes, expected errors, and feature-specific behavior.
-   Shared setup and architecture conventions belong in this README.
+4. The contracts in `packages/contracts/src/*.contract.ts` are the endpoint
+   reference; do not document endpoints in Markdown. Explain non-obvious fields
+   with Zod `.describe()`, comment non-obvious behavior where it is implemented,
+   and record the reasoning behind real trade-offs in `docs/decisions.md`.
 5. Add HTTP and persistence coverage alongside the feature, then run the checks
    below. Follow the repository's local API and backend-test skills.
 

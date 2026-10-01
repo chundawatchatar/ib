@@ -5,6 +5,7 @@ import {
 	createEmployeeCreationController,
 	createEmployeeDeactivationController,
 	createEmployeeDetailsController,
+	createEmployeeSalaryUpdateController,
 	createEmployeeUpdateController,
 } from "./modules/employees/employees.controller";
 import { createHealthController } from "./modules/health/health.controller";
@@ -18,6 +19,9 @@ export function createRouter(services: Services) {
 		getEmployee: createEmployeeDetailsController(services.employees),
 		createEmployee: createEmployeeCreationController(services.employees),
 		updateEmployee: createEmployeeUpdateController(services.employees),
+		updateEmployeeSalary: createEmployeeSalaryUpdateController(
+			services.employees,
+		),
 		deactivateEmployee: createEmployeeDeactivationController(
 			services.employees,
 		),

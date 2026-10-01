@@ -101,7 +101,14 @@ const employeeProfileShape = {
 	jobTitleId: z.string().uuid(),
 };
 // PostgreSQL versions are int4; reserve room for the next version.
-const expectedVersionSchema = z.number().int().min(1).max(2_147_483_646);
+const expectedVersionSchema = z
+	.number()
+	.int()
+	.min(1)
+	.max(2_147_483_646)
+	.describe(
+		"The version the client last read; a mismatch returns 409 and the client must reload.",
+	);
 
 export const employeeParamsSchema = z
 	.object({ id: z.string().uuid() })
@@ -121,7 +128,10 @@ export const updateEmployeeRequestSchema = z
 	.strict();
 export const deactivateEmployeeRequestSchema = z
 	.object({ version: expectedVersionSchema })
-	.strict();
+	.strict()
+	.describe(
+		"Repeating with the current version of an inactive employee is a no-op.",
+	);
 export const employeeResponseSchema = employeeDirectoryItemSchema.extend({
 	createdAt: z.string().datetime(),
 	updatedAt: z.string().datetime(),
@@ -133,3 +143,18 @@ export type DeactivateEmployeeRequest = z.infer<
 	typeof deactivateEmployeeRequestSchema
 >;
 export type EmployeeResponse = z.infer<typeof employeeResponseSchema>;
+
+export const updateEmployeeSalaryRequestSchema = z
+	.object({
+		version: expectedVersionSchema,
+		currencyCode: z.string().regex(/^[A-Z]{3}$/),
+		salaryMinorUnits: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+		reason: requiredText(1000).optional(),
+	})
+	.strict()
+	.describe(
+		"Updates salary and currency and writes a salary_changes audit row in the same transaction.",
+	);
+export type UpdateEmployeeSalaryRequest = z.infer<
+	typeof updateEmployeeSalaryRequestSchema
+>;

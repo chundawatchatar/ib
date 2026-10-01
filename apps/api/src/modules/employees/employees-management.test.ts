@@ -51,6 +51,7 @@ describe("employee management HTTP contracts", () => {
 		get: vi.fn<EmployeeService["get"]>(),
 		create: vi.fn<EmployeeService["create"]>(),
 		update: vi.fn<EmployeeService["update"]>(),
+		updateSalary: vi.fn<EmployeeService["updateSalary"]>(),
 		deactivate: vi.fn<EmployeeService["deactivate"]>(),
 	};
 	let server: Server;
@@ -71,6 +72,7 @@ describe("employee management HTTP contracts", () => {
 		service.get.mockResolvedValue({ kind: "success", employee });
 		service.create.mockResolvedValue({ kind: "success", employee });
 		service.update.mockResolvedValue({ kind: "success", employee });
+		service.updateSalary.mockResolvedValue({ kind: "success", employee });
 		service.deactivate.mockResolvedValue({ kind: "success", employee });
 	});
 	afterAll(async () => {
@@ -223,6 +225,94 @@ describe("employee management HTTP contracts", () => {
 			const response = await request(path, method, body);
 			expect(response.status).toBe(status);
 			expect(apiErrorSchema.parse(await response.json())).toEqual(error);
+		}
+	});
+	it("saves salary through the contract with a trimmed optional reason", async () => {
+		const body = { version: 1, currencyCode: "EUR", salaryMinorUnits: 9000000 };
+		const response = await request(contract.updateEmployeeSalary.path, "PUT", {
+			...body,
+			reason: "  Annual review  ",
+		});
+		expect(response.status).toBe(200);
+		expect(
+			contract.updateEmployeeSalary.responses[200].parse(await response.json()),
+		).toEqual(employee);
+		expect(service.updateSalary).toHaveBeenCalledWith(id, {
+			...body,
+			reason: "Annual review",
+		});
+	});
+
+	it.each([
+		{ version: undefined },
+		{ version: 0 },
+		{ version: 1.5 },
+		{ version: "1" },
+		{ version: 2_147_483_647 },
+		{ currencyCode: undefined },
+		{ currencyCode: "usd" },
+		{ salaryMinorUnits: undefined },
+		{ salaryMinorUnits: 0 },
+		{ salaryMinorUnits: -1 },
+		{ salaryMinorUnits: 1.5 },
+		{ salaryMinorUnits: "100" },
+		{ salaryMinorUnits: Number.MAX_SAFE_INTEGER + 1 },
+		{ reason: " " },
+		{ reason: "bad\u0000reason" },
+		{ reason: "x".repeat(1001) },
+		{ countryCode: "DE" },
+	])(
+		"rejects invalid salary input %j before calling the service",
+		async (invalid) => {
+			const response = await request(
+				contract.updateEmployeeSalary.path,
+				"PUT",
+				{
+					version: 1,
+					currencyCode: "USD",
+					salaryMinorUnits: 10000000,
+					...invalid,
+				},
+			);
+			expect(response.status).toBe(400);
+			expect(apiErrorSchema.parse(await response.json()).issues).toEqual(
+				expect.arrayContaining([expect.objectContaining({ location: "body" })]),
+			);
+			expect(service.updateSalary).not.toHaveBeenCalled();
+		},
+	);
+
+	it("validates salary path IDs and maps all declared domain failures", async () => {
+		const body = {
+			version: 1,
+			currencyCode: "USD",
+			salaryMinorUnits: 10000000,
+		};
+		const invalid = await request(
+			contract.updateEmployeeSalary.path.replace(":id", "bad"),
+			"PUT",
+			body,
+		);
+		expect(invalid.status).toBe(400);
+		expect(service.updateSalary).not.toHaveBeenCalled();
+		for (const [kind, status] of [
+			["invalid", 400],
+			["notFound", 404],
+			["conflict", 409],
+		] as const) {
+			const error = { message: "Expected salary failure" };
+			service.updateSalary.mockResolvedValueOnce({ kind, error });
+			const response = await request(
+				contract.updateEmployeeSalary.path,
+				"PUT",
+				body,
+			);
+			expect(response.status).toBe(status);
+			expect(
+				contract.updateEmployeeSalary.responses[status].parse(
+					await response.json(),
+				),
+			).toEqual(error);
 		}
 	});
 });

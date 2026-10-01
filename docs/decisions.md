@@ -123,7 +123,7 @@ add query files and database dependencies when a feature actually uses them.
 
 **Decision:** Create accepts the initial salary and explicit currency. Profile
 updates replace the profile fields and require the current version; salary and
-currency changes go through the later salary-edit API. Deactivation also requires
+currency changes go through the salary-edit API. Deactivation also requires
 a version, retains employee/audit rows, and is a no-op when already inactive at
 that version. These operations share one employee service and query module.
 
@@ -134,4 +134,19 @@ until the transaction commits, and duplicate-code updates roll back fully.
 
 **Trade-off:** Clients must send the complete profile and version, and reload on
 conflicts. Initial salary creation is not a salary change; profile edits do not
-produce salary audit entries. Salary audit writes remain the next plan item.
+produce salary audit entries. Salary edits write their audit entries atomically.
+
+## Salary saves serialize with all employee writes
+
+**Decision:** Salary edits lock the employee before checking the expected version,
+then update compensation and write the audit row in one transaction. The audit
+uses the resulting employee version and update timestamp. Every accepted save,
+including unchanged compensation, creates an audit entry; inactive employees can
+be edited consistently with profile edits.
+
+**Why:** One shared version protects salary edits against concurrent salary,
+profile, and deactivation writes. A failed audit insert must undo the salary
+update, and retrying an old request must never create a second history row.
+
+**Trade-off:** Contending writes briefly wait for the row lock before returning
+a conflict. Clients must reload after 409 and send the new version for a new save.

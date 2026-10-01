@@ -1,6 +1,7 @@
 export const ROUTE = {
-	EMPLOYEES: "/api/employees" as const,
-	EMPLOYEE: "/api/employees/:id" as const,
-	DEACTIVATE_EMPLOYEE: "/api/employees/:id/deactivate" as const,
-	HEALTH: "/api/health" as const,
-};
+	EMPLOYEES: "/api/employees",
+	EMPLOYEE: "/api/employees/:id",
+	DEACTIVATE_EMPLOYEE: "/api/employees/:id/deactivate",
+	EMPLOYEE_SALARY: "/api/employees/:id/salary",
+	HEALTH: "/api/health",
+} as const;

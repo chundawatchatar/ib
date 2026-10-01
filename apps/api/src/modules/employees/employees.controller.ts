@@ -61,3 +61,17 @@ export function createEmployeeDeactivationController(
 			: { status: 409, body: result.error };
 	};
 }
+
+export function createEmployeeSalaryUpdateController(
+	service: EmployeeService,
+): AppRouteImplementation<typeof contract.updateEmployeeSalary> {
+	return async ({ params, body }) => {
+		const result = await service.updateSalary(params.id, body);
+		if (result.kind === "success")
+			return { status: 200, body: result.employee };
+		if (result.kind === "notFound") return { status: 404, body: result.error };
+		return result.kind === "invalid"
+			? { status: 400, body: result.error }
+			: { status: 409, body: result.error };
+	};
+}

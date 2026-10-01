@@ -5,6 +5,7 @@ import type {
 	EmployeeDirectoryResponse,
 	EmployeeResponse,
 	UpdateEmployeeRequest,
+	UpdateEmployeeSalaryRequest,
 } from "@salary-manager/contracts";
 import type { Database } from "@salary-manager/domain";
 import * as queries from "./employees.queries";
@@ -114,6 +115,19 @@ export function createEmployeeService(db: Database) {
 				throw error;
 			}
 		},
+		updateSalary: (
+			id: string,
+			body: UpdateEmployeeSalaryRequest,
+		): Promise<ChangeResult> =>
+			db.transaction(async (tx) => {
+				const employee = await queries.lockEmployee(tx, id);
+				if (!employee) return notFound;
+				if (employee.version !== body.version) return stale;
+				if (!(await queries.validSalaryCurrency(tx, body.currencyCode)))
+					return invalidReferences(["currencyCode"]);
+				await queries.updateEmployeeSalary(tx, id, body, employee);
+				return savedEmployee(tx, id);
+			}),
 		deactivate: (
 			id: string,
 			version: number,

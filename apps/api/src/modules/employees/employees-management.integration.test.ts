@@ -15,7 +15,7 @@ import {
 	createTestDatabase,
 	type TestDatabase,
 } from "@salary-manager/domain/testing";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { startApi } from "../../start";
 
@@ -56,7 +56,7 @@ describe("employee management against real PostgreSQL", () => {
 		await start();
 	}, 30000);
 	async function start() {
-		runtime = await startApi(testDatabase.databaseUrl, 0);
+		runtime = await startApi(testDatabase.databaseUrl, 0, "127.0.0.1");
 		const address = runtime.server.address();
 		if (!address || typeof address === "string")
 			throw new Error("Missing listener");
@@ -377,5 +377,237 @@ describe("employee management against real PostgreSQL", () => {
 				message: "Employee not found",
 			});
 		}
+	});
+	it("saves exact compensation and audit history atomically and survives restart", async () => {
+		const employee = await create({ ...body, salaryMinorUnits: 15000000 });
+		const response = await request(
+			contract.updateEmployeeSalary.path,
+			"PUT",
+			{
+				version: 1,
+				currencyCode: "USD",
+				salaryMinorUnits: 16000000,
+				reason: "  Annual review  ",
+			},
+			employee.id,
+		);
+		expect(response.status).toBe(200);
+		const saved = contract.updateEmployeeSalary.responses[200].parse(
+			await response.json(),
+		);
+		expect(saved).toMatchObject({
+			...employee,
+			salaryMinorUnits: 16000000,
+			version: 2,
+			updatedAt: expect.any(String),
+		});
+		expect(Date.parse(saved.updatedAt)).toBeGreaterThan(
+			Date.parse(employee.updatedAt),
+		);
+		const [audit] = await testDatabase.connection.db
+			.select()
+			.from(salaryChanges);
+		expect(audit).toMatchObject({
+			employeeId: employee.id,
+			oldSalaryMinorUnits: 15000000,
+			newSalaryMinorUnits: 16000000,
+			oldCurrencyCode: "USD",
+			newCurrencyCode: "USD",
+			employeeVersion: 2,
+			reason: "Annual review",
+			changedAt: new Date(saved.updatedAt),
+		});
+		await runtime.close();
+		await start();
+		expect(await view(employee.id)).toEqual(saved);
+		const currencyChange = await request(
+			contract.updateEmployeeSalary.path,
+			"PUT",
+			{
+				version: 2,
+				currencyCode: "JPY",
+				salaryMinorUnits: Number.MAX_SAFE_INTEGER,
+			},
+			employee.id,
+		);
+		expect(currencyChange.status).toBe(200);
+		expect(
+			contract.updateEmployeeSalary.responses[200].parse(
+				await currencyChange.json(),
+			),
+		).toMatchObject({
+			countryCode: "US",
+			currencyCode: "JPY",
+			currencyMinorUnits: 0,
+			salaryMinorUnits: Number.MAX_SAFE_INTEGER,
+			version: 3,
+		});
+		const audits = await testDatabase.connection.db
+			.select()
+			.from(salaryChanges);
+		expect(audits).toHaveLength(2);
+		expect(audits.find((row) => row.employeeVersion === 3)).toMatchObject({
+			oldCurrencyCode: "USD",
+			newCurrencyCode: "JPY",
+			oldSalaryMinorUnits: 16000000,
+			newSalaryMinorUnits: Number.MAX_SAFE_INTEGER,
+			reason: null,
+		});
+	});
+
+	it("rejects missing, invalid and stale salary edits without changing data or history", async () => {
+		const employee = await create();
+		for (const [patch, status] of [
+			[{ currencyCode: "XXX" }, 400],
+			[{ salaryMinorUnits: 0 }, 400],
+			[{ version: 2 }, 409],
+		] as const) {
+			const response = await request(
+				contract.updateEmployeeSalary.path,
+				"PUT",
+				{
+					version: 1,
+					currencyCode: "USD",
+					salaryMinorUnits: 16000000,
+					...patch,
+				},
+				employee.id,
+			);
+			expect(response.status).toBe(status);
+			const error = apiErrorSchema.parse(await response.json());
+			if ("currencyCode" in patch)
+				expect(error.issues?.[0]?.path).toBe("currencyCode");
+			expect(await view(employee.id)).toEqual(employee);
+			expect(await testDatabase.connection.db.$count(salaryChanges)).toBe(0);
+		}
+		const missing = await request(
+			contract.updateEmployeeSalary.path,
+			"PUT",
+			{
+				version: 1,
+				currencyCode: "USD",
+				salaryMinorUnits: 16000000,
+			},
+			randomUUID(),
+		);
+		expect(missing.status).toBe(404);
+	});
+
+	it("allows only one concurrent salary edit with the same expected version and one audit row", async () => {
+		const employee = await create();
+		const responses = await Promise.all(
+			[16000000, 17000000].map((salaryMinorUnits) =>
+				request(
+					contract.updateEmployeeSalary.path,
+					"PUT",
+					{ version: 1, currencyCode: "USD", salaryMinorUnits },
+					employee.id,
+				),
+			),
+		);
+		expect(responses.map((response) => response.status).sort()).toEqual([
+			200, 409,
+		]);
+		const success = responses.find((response) => response.status === 200);
+		if (!success) throw new Error("Missing success");
+		const saved = contract.updateEmployeeSalary.responses[200].parse(
+			await success.json(),
+		);
+		expect(await view(employee.id)).toEqual(saved);
+		const audits = await testDatabase.connection.db
+			.select()
+			.from(salaryChanges);
+		expect(audits).toHaveLength(1);
+		expect(audits[0]).toMatchObject({
+			employeeVersion: 2,
+			newSalaryMinorUnits: saved.salaryMinorUnits,
+		});
+	});
+
+	it("shares the version lock with profile edits and deactivation", async () => {
+		for (const other of ["profile", "deactivate"] as const) {
+			const employee = await create({ ...body, code: other });
+			const responses = await Promise.all([
+				request(
+					contract.updateEmployeeSalary.path,
+					"PUT",
+					{ version: 1, currencyCode: "USD", salaryMinorUnits: 16000000 },
+					employee.id,
+				),
+				other === "profile"
+					? request(
+							contract.updateEmployee.path,
+							"PUT",
+							{ ...profile(employee), name: "New name" },
+							employee.id,
+						)
+					: request(
+							contract.deactivateEmployee.path,
+							"POST",
+							{ version: 1 },
+							employee.id,
+						),
+			]);
+			expect(responses.map((response) => response.status).sort()).toEqual([
+				200, 409,
+			]);
+			expect((await view(employee.id)).version).toBe(2);
+			expect(
+				await testDatabase.connection.db.$count(
+					salaryChanges,
+					eq(salaryChanges.employeeId, employee.id),
+				),
+			).toBe(responses[0]?.status === 200 ? 1 : 0);
+		}
+	});
+
+	it("rolls back salary, currency, version and timestamp when the audit insert fails", async () => {
+		const employee = await create();
+		// A real database constraint failure after the employee update proves rollback.
+		await testDatabase.connection.db.execute(
+			sql`alter table salary_changes add constraint reject_test_audit check (reason is distinct from 'reject audit')`,
+		);
+		const response = await request(
+			contract.updateEmployeeSalary.path,
+			"PUT",
+			{
+				version: 1,
+				currencyCode: "EUR",
+				salaryMinorUnits: 9000000,
+				reason: "reject audit",
+			},
+			employee.id,
+		);
+		expect(response.status).toBe(500);
+		expect(apiErrorSchema.parse(await response.json()).message).toBe(
+			"Internal server error",
+		);
+		expect(await view(employee.id)).toEqual(employee);
+		expect(await testDatabase.connection.db.$count(salaryChanges)).toBe(0);
+	});
+
+	it("audits current-version saves even when compensation is unchanged or the employee is inactive", async () => {
+		const employee = await create();
+		await request(
+			contract.deactivateEmployee.path,
+			"POST",
+			{ version: 1 },
+			employee.id,
+		);
+		const response = await request(
+			contract.updateEmployeeSalary.path,
+			"PUT",
+			{
+				version: 2,
+				currencyCode: employee.currencyCode,
+				salaryMinorUnits: employee.salaryMinorUnits,
+			},
+			employee.id,
+		);
+		expect(response.status).toBe(200);
+		expect(
+			contract.updateEmployeeSalary.responses[200].parse(await response.json()),
+		).toMatchObject({ active: false, version: 3 });
+		expect(await testDatabase.connection.db.$count(salaryChanges)).toBe(1);
 	});
 });

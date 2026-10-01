@@ -110,7 +110,7 @@ describe("directory against real PostgreSQL", () => {
 				},
 			].map((row) => ({ ...row, jobTitleId: title.id })),
 		);
-		runtime = await startApi(testDatabase.databaseUrl, 0);
+		runtime = await startApi(testDatabase.databaseUrl, 0, "127.0.0.1");
 		const address = runtime.server.address();
 		if (!address || typeof address === "string")
 			throw new Error("Missing listener");

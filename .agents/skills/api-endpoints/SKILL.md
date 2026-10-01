@@ -71,7 +71,7 @@ Read the requirement and acceptance criteria in `docs/requirements.md` and the i
 
 ## 6. Finish
 
-- Document the endpoint in `apps/api/README.md`: method, path, parameters table, response shape, and errors.
+- The contract is the endpoint reference: do not document endpoints in Markdown (no endpoint lists or parameter tables). Explain non-obvious fields with Zod `.describe()`, and comment non-obvious behavior in the service where it happens.
 - Record any real trade-off in `docs/decisions.md`. Move the item to Done in `docs/plan.md`.
 - For list or search endpoints, measure response time over the seeded data and record it before claiming the performance target.
 - Run `pnpm check` and `pnpm test:db`, and report what each proved.

@@ -21,7 +21,7 @@ Do not use HTTP requests for every arithmetic branch or fully mocked repositorie
 
 Use small explicit fixtures, deterministic IDs/time, and fresh temporary or in-memory databases where applicable. Apply actual migrations when testing schema behavior. Restore clocks, mocks, and globals, and close servers/connections in teardown. Keep tests independent of execution order, uncontrolled randomness, external services, and real-time sleeps.
 
-For real HTTP tests, use loopback and an ephemeral port, wait for readiness, and close the listener after success or failure. Validate parsed JSON as unknown through the project's runtime response schemas. If permissions block sockets, report the limitation and use the authorized runner; do not claim a direct handler call verifies the HTTP boundary.
+For real HTTP tests, bind explicitly to `127.0.0.1` with an ephemeral port (`listen(0, "127.0.0.1")` or `startApi(url, 0, "127.0.0.1")`; binding all interfaces can collide with services bound only to loopback), wait for readiness, and close the listener after success or failure. Validate parsed JSON as unknown through the project's runtime response schemas. If permissions block sockets, report the limitation and use the authorized runner; do not claim a direct handler call verifies the HTTP boundary.
 
 ## Select meaningful cases
 

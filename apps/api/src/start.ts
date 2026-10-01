@@ -4,17 +4,20 @@ import { createDatabase, requireDatabaseUrl } from "@salary-manager/domain";
 import { createApp } from "./app";
 import { createServices } from "./services";
 
+// `host` defaults to all interfaces. Tests pass "127.0.0.1": an ephemeral port
+// on all interfaces can coincide with a service bound only to loopback (such as
+// PostgreSQL's forwarded port), and requests to 127.0.0.1 would reach that service.
 export async function startApi(
 	databaseUrl = process.env.DATABASE_URL,
 	port = 3001,
+	host?: string,
 ) {
 	const connection = createDatabase(requireDatabaseUrl(databaseUrl));
 	let server: Server | undefined;
 	try {
 		await connection.checkConnection();
-		server = createApp({ services: createServices(connection.db) }).listen(
-			port,
-		);
+		const app = createApp({ services: createServices(connection.db) });
+		server = host === undefined ? app.listen(port) : app.listen(port, host);
 		await once(server, "listening");
 	} catch {
 		if (server?.listening) server.close();

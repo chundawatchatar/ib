@@ -7,7 +7,6 @@ completes it and move it to Done; `git log` records which commit that was.
 
 ## Next
 
-- [ ] Salary edit API: optimistic version check, audit row in the same transaction, conflict response for stale edits
 - [ ] Pay insights: headcount, total, average, median, min, max, P25/P75 for the full filtered population; tested against the requirements acceptance numbers
 - [ ] Insights grouping (country, department, level, job title), salary histogram, local-currency and USD-normalized views
 - [ ] Client data layer: TanStack Query provider, ts-rest client, `unwrap` helper, and router-loader integration
@@ -43,4 +42,5 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] Employee directory API: server pagination, name/code search, filters (country, department, level, currency, salary range), stable sorting, total count
 - [x] Employee create/view/edit/deactivate API with server-side validation
 - [x] Split employee and health contracts into feature modules composed by the main contract
-- [x] Keep API README conventions generic and endpoint documentation with its feature
+- [x] Contracts are the endpoint reference; the API README keeps only general conventions
+- [x] Salary edit API: optimistic version check, audit row in the same transaction, conflict response for stale edits

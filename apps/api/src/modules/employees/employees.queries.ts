@@ -3,6 +3,7 @@ import type {
 	EmployeeDirectoryQuery,
 	EmployeeDirectoryResponse,
 	UpdateEmployeeRequest,
+	UpdateEmployeeSalaryRequest,
 } from "@salary-manager/contracts";
 import {
 	countries,
@@ -11,6 +12,7 @@ import {
 	departments,
 	employees,
 	jobTitles,
+	salaryChanges,
 } from "@salary-manager/domain";
 import {
 	and,
@@ -134,7 +136,12 @@ export async function getEmployee(db: Pick<Database, "select">, id: string) {
 
 export async function lockEmployee(db: Pick<Database, "select">, id: string) {
 	const [row] = await db
-		.select({ version: employees.version, active: employees.active })
+		.select({
+			version: employees.version,
+			active: employees.active,
+			salaryMinorUnits: employees.salaryMinorUnits,
+			currencyCode: employees.currencyCode,
+		})
 		.from(employees)
 		.where(eq(employees.id, id))
 		.for("update");
@@ -217,4 +224,45 @@ export async function invalidEmployeeReferences(
 		if (!currency) missing.push("currencyCode");
 	}
 	return missing;
+}
+
+export async function validSalaryCurrency(
+	db: Pick<Database, "select">,
+	currencyCode: string,
+) {
+	const [currency] = await db
+		.select({ code: currencies.code })
+		.from(currencies)
+		.where(eq(currencies.code, currencyCode))
+		.for("key share");
+	return Boolean(currency);
+}
+
+export async function updateEmployeeSalary(
+	db: Pick<Database, "update" | "insert">,
+	id: string,
+	body: UpdateEmployeeSalaryRequest,
+	previous: { salaryMinorUnits: number; currencyCode: string },
+) {
+	const [saved] = await db
+		.update(employees)
+		.set({
+			salaryMinorUnits: body.salaryMinorUnits,
+			currencyCode: body.currencyCode,
+			version: body.version + 1,
+			updatedAt: sql`clock_timestamp()`,
+		})
+		.where(and(eq(employees.id, id), eq(employees.version, body.version)))
+		.returning({ updatedAt: employees.updatedAt });
+	if (!saved) throw new Error("Locked employee salary update failed");
+	await db.insert(salaryChanges).values({
+		employeeId: id,
+		oldSalaryMinorUnits: previous.salaryMinorUnits,
+		newSalaryMinorUnits: body.salaryMinorUnits,
+		oldCurrencyCode: previous.currencyCode,
+		newCurrencyCode: body.currencyCode,
+		employeeVersion: body.version + 1,
+		changedAt: saved.updatedAt,
+		reason: body.reason,
+	});
 }
