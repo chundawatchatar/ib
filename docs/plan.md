@@ -7,7 +7,7 @@ completes it and move it to Done; `git log` records which commit that was.
 
 ## Next
 
-- [ ] Deploy API, client, and PostgreSQL; run migrations and seed ([steps](deployment.md)); link the app in the README
+Nothing queued.
 
 ## Done
 
@@ -45,3 +45,4 @@ completes it and move it to Done; `git log` records which commit that was.
 - [x] Root README: overview, architecture, setup, checks, links to docs
 - [x] `docs/ai-usage.md`: how agents, skills, and reviews were used, and where AI output was corrected
 - [x] Record the demo video and link it in the README
+- [x] Deploy API, client, and PostgreSQL; run migrations and seed ([steps](deployment.md)); link the app in the README

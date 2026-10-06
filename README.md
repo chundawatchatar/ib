@@ -3,8 +3,8 @@
 A web app for ACME's HR Manager to maintain salaries for 10,000 employees across
 countries and answer "how do we pay people?" without spreadsheets.
 
-- **Live app:** not deployed yet (see [deployment](docs/deployment.md))
-- **Demo video:** not recorded yet
+- **Live app:** <https://salary-manager-t0dg.onrender.com> (free tier: the first request can take about a minute; see [deployment](docs/deployment.md))
+- **Demo video:** [walkthrough](https://drive.google.com/file/d/19Q0ziKPK2Ih296HnvAl6_YT0sxqzara6/view?usp=sharing)
 
 ## What it does
 
