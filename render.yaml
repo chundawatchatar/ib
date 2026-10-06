@@ -31,7 +31,7 @@ services:
       # Update the host if Render assigns the API a different URL.
       - type: rewrite
         source: /api/*
-        destination: https://salary-manager-api.onrender.com/api/*
+        destination: https://salary-manager-api-o39t.onrender.com/api/*
       # Client-rendered routes all load the prerendered SPA shell.
       - type: rewrite
         source: /*

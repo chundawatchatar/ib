@@ -55,7 +55,7 @@ Run `pnpm db:up` and `pnpm db:migrate` first.
    refuses to run when employees already exist.
 3. In Render, choose **New → Blueprint**, select the repository, and enter the
    same `DATABASE_URL` for the API.
-4. If the API's URL differs from `https://salary-manager-api.onrender.com`,
+4. If the API's URL differs from `https://salary-manager-api-o39t.onrender.com`,
    update the `/api/*` rewrite in `render.yaml`.
 5. Open `/api/health` on the static site, then the directory and insights pages.
 
