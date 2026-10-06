@@ -17,7 +17,7 @@ services:
     name: salary-manager
     runtime: static
     autoDeployTrigger: checksPass
-    buildCommand: npm install --global pnpm@11.15.1 && pnpm install --frozen-lockfile --filter @salary-manager/client... && pnpm --filter @salary-manager/client run build
+    buildCommand: pnpm install --frozen-lockfile --filter @salary-manager/client... && pnpm --filter @salary-manager/client run build
     staticPublishPath: apps/client/dist/client
     envVars:
       - key: NODE_VERSION
